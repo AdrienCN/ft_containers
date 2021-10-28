@@ -1,16 +1,41 @@
 Definir:
 
-	_Namespace:
+_Namespace:
 
 
-	_Template:
+_Template:
+Defini une classe ou une fonction qui pourra manipuler n'importe quel TYPE de
+variable et dont le comportement sera similaire.
+Keyword : class
+Keyword : typename
+typename == class
+	fonction :
+template <typename anyType>
+	anyType GetMAx(anyType a, anyType b)
+{
+	return (a > b ? a : b);
+}
+	
+	class:
+//Definition
+template <typename anyType>
+	class myClass
+{
+	anyType [2] //;
+}
+//Use
+main 
+{
+	//creer un myClass avec INT comme anyType;
+	myClass<int> a;
+}
 
 
-	_allocator:
+_allocator:
 
 
-	_iterator:
+_iterator:
 
 
-	_explicit:
+_explicit:
 
