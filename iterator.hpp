@@ -10,7 +10,7 @@ namespace ft
 	struct random_access_iterator_tag : public bidirectional_iterator_tag {};
 	
 	template	<typename Category, typename T,
-				typename Distance = ptrdiff_t,
+				typename Distance = std::ptrdiff_t,
 				typename Pointer = T*,
 				typename Reference = &T
 				>
