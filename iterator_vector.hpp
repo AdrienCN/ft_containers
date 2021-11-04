@@ -288,13 +288,5 @@ namespace ft
 		protected:
 		//Empty	
 	};
-	class reverse_iterator_vector : public ft::iterator<ft::random_access_tag, T, T*, pt>
-	{
-
-	};
-	class const_reverse_iterator_vector : public ft::iterator<ft::random_access_tag, T, T*, pt>
-	{
-
-	};
 };
 #endif
