@@ -93,14 +93,59 @@ namespace ft
 
 				//	****MEMBER FUNCTION ****
 				//iterator
-				begin;
-				end;
-				rbegin;
-				rend;
+				iterator begin()
+				{
+					return iterator(_array);
+				}
+				
+				const_iterator begin() const
+				{
+					return const_iterator(_array);
+				}
+				
+				iterator end()
+				{
+					return iterator(_array + _size);
+				}
+				
+				const_iterator end()
+				{
+					return const_iterator(_array + _size);
+				};
+
+				reverse_iterator rbegin()
+				{
+					return reverse_iterator(end());// - 1);
+				};
+				
+				const_reverse_iterator rbegin() const
+				{
+					return const_reverse_iterator(end());// - 1);
+				}
+				
+				reverse_iterator rend()
+				{
+					return reverse_iterator(begin());// - 1);
+				}
+				
+				const_reverse_iterator rend() const
+				{
+					return const_reverse_iterator(begin()); //- 1 );
+				}
+				
+
 
 				//Capacity
-				size;
-				max_size;
+				size_type size() const
+				{
+					return (_size);
+				}
+
+				size_type max_size() const
+				{
+					return (_allocator.max_size());
+				}
+				
 				resize;
 				capacity;
 				empty;
