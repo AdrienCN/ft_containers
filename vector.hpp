@@ -146,10 +146,44 @@ namespace ft
 					return (_allocator.max_size());
 				}
 				
-				resize;
-				capacity;
-				empty;
-				reserve;
+				void	resize(size_type n, value_type val = value_type())
+				{
+					if (n < _size)
+					{
+						//reduce size;
+						return;
+					}
+					if (n > _size)
+					{
+						//add new element
+						if (n > _capacity)
+						//add capacity first
+					}
+				}
+
+				size_type	capacity() const
+				{
+					return (_capacity);
+				}
+
+				bool		empty() const
+				{
+					return (_size == 0 ? true : false);
+				}
+				void	reserve(size_type n)
+				{
+					if (n > _capacity)
+					{
+						pointer newarray;
+						newarray = _allocator.allocate(n);
+						for (size_type i = 0; i < size; i++)
+							_allocator.construct(newarrray + i, _array[i]);
+						~vector();
+						_size = n;
+						_capacity = n;
+						_array = newarray;
+					}
+				}
 				//Element access
 				operator[];
 				at;
