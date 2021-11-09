@@ -312,8 +312,27 @@ namespace ft
 					for (iterator it = tmp_array.begin(); it != tmp_array.end(); it ++)
 						this->push_back(*it);
 				}
+				
 				erase;
-				swap;
+				
+				swap (vector& x)
+				{
+					allocator_type	tmp_alloc	= _allocator;
+					size_type		tmp_size	= _size;
+					size_type		tmp_cap		= _capacity;
+					pointer			tmp_array	= _array;
+					
+					_array = x._array;
+					_capacity = x.capacity;
+					_size = x.size;
+					_allocator = x.get_allocator;
+
+					x._array = tmp_array;
+					x._allocator = tmp_alloc;
+					x._size = tmp_size;
+					x.capacity = tmp_capacity;
+				}
+
 				void	clear()
 				{
 					while (_size > 0)
@@ -323,7 +342,10 @@ namespace ft
 					}
 				}
 				//Allocator
-				get_allocator;
+				allocator_type get_allocator() const
+				{
+					return _allocator;
+				}
 
 			private:
 
