@@ -5,6 +5,9 @@
 #include "reverse_iterator.hpp"
 #include "iterator_vector.hpp"
 
+#define SPACE _size * 2		
+#define MIN_SPACE 128		
+
 namespace ft
 {
 	template <typename T, class Alloc = std::allocator<T> >
@@ -37,7 +40,7 @@ namespace ft
 				explicit vector(const allocator_type& alloc = allocator_type()) :  _allocator(alloc)_size(0), _array(NULL), _capacity(0) {};
 				//fill
 				explicit vector (size_type n, const value_type & val = value_type(),
-								const allocator_type & alloc = allocator_type()): _allocator(alloc), _size(n), _capacity(n), _array(alloc.allocate(_capacity)
+								const allocator_type & alloc = allocator_type()): _allocator(alloc), _size(n), _capacity(_size), _array(alloc.allocate(_capacity)
 				{
 					for (size_type i = 0; i < _size; i++)
 						_allocator.construct(_array + i, val);
@@ -150,14 +153,27 @@ namespace ft
 				{
 					if (n < _size)
 					{
+						for (size_type i = n; i < _size; i++)
+						{
+							_allocator.destroy(_array + i);
+							_allocator.deallocate(_array + i, 1);
+						}
+						_size = n;
+						// _allocator.deallocate(_array + n, (n - _size));
 						//reduce size;
 						return;
 					}
 					if (n > _size)
 					{
-						//add new element
-						if (n > _capacity)
 						//add capacity first
+						if (n > _capacity)
+							reserver(n);
+						//add new element
+						while (_size < n)
+						{
+							_allocator.construct(_array + _size, val)
+							_size++;
+						}
 					}
 				}
 
@@ -170,34 +186,142 @@ namespace ft
 				{
 					return (_size == 0 ? true : false);
 				}
+
 				void	reserve(size_type n)
 				{
 					if (n > _capacity)
 					{
 						pointer newarray;
 						newarray = _allocator.allocate(n);
-						for (size_type i = 0; i < size; i++)
+						for (size_type i = 0; i < _size; i++)
 							_allocator.construct(newarrray + i, _array[i]);
 						~vector();
-						_size = n;
 						_capacity = n;
 						_array = newarray;
 					}
 				}
 				//Element access
-				operator[];
-				at;
-				front;
-				back;
+				reference	operator[](size_type n)
+				{
+					return _array[n];
+				}
+
+				const_reference		operator[](size_type n) const
+				{
+					return _array[n];
+				}
+
+				reference at(size_type n)
+				{
+					if (n < 0 || n >= _size)
+						throw std::out_of_range();
+					return _array[n];
+				}
+
+				const_reference at(size_type n) const
+				{
+					if (n < 0 || n >= _size)
+						throw std::out_of_range();
+					return _array[n];
+				}
+
+				reference front()
+				{
+					return _array[0];
+				}
+				const_reference front() const
+				{
+					return _array[0];
+				}
+				reference back()
+				{
+					return _array[_size - 1];
+				}
+				const_reference back() const
+				{
+					return _array[_size - 1];
+				}
 
 				//Modifiers
-				assign;
-				push_back;
-				pop_back;
-				insert;
+				template <typename InputIterator>
+					void	assign(InputIterator firt, InputIterator last)
+					{
+						this->clear();
+						size_type new_size = 0;
+						for (InputIterator tmp = first; tmp != last; tmp++)
+							new_size++;
+						this->reserve(new_size);
+						_size = 0;
+						while (first != last)
+						{
+							_allocator.construct(_array + _size, *first);
+							first++;
+							_size++;
+						}
+					}
+				void assign(size_type n, const value_type &val)
+				{
+					this->clear();
+					this->reserve(n);
+					for (size_type i = 0; i < n; i++)
+						_allocator.construct(_array + i, val);
+					_size = n;
+				}
+
+				void	push_back(const value_type& val)
+				{
+					if (_capacity == 0)
+						this->reserve(1);
+					if (_size + 1 >= _capacity)
+						this->reserve(SPACE);
+					_allocator.construct(_array + _size, val);
+					_size++;
+				}
+				void	pop_back()
+				{
+					/*if (_size == 0)
+						return;
+						*/
+					_allocator.destroy(this->end() - 1);
+					_size--;
+				}
+				iterator insert (iterator position, const value_type &val)
+				{
+					size_type pos = position._ptr - _array;
+					this->insert(position, 1, val);
+					return (iterator(this->begin() + pos));
+				}
+				void insert (iterator position , size_type n, const value_type &val)
+				{
+					if (n == 0)
+						return;
+					size_type index = position._ptr - _array; //emplacement de la position ?
+					while (_size + n >= _capacity)
+						this->reserve(SPACE);
+					pointer tmp_array(_array + index);
+					//detruire tout les elements depuis index
+					for (size_type i = index; i < _size; i++)
+					{
+						_allocator.destroy(_array + i);
+						_size--;
+					}
+					//Insere les new elements
+					for (size_type i = 0; i < n; i++)
+						this->push_back(val);
+					//Reinsere les elements detruits APRES les new elements
+					for (iterator it = tmp_array.begin(); it != tmp_array.end(); it ++)
+						this->push_back(*it);
+				}
 				erase;
 				swap;
-				clear;
+				void	clear()
+				{
+					while (_size > 0)
+					{
+						_allocator.destroy(_array + (_size - 1));
+						_size--;
+					}
+				}
 				//Allocator
 				get_allocator;
 

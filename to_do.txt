@@ -30,6 +30,17 @@ main
 	myClass<int> a;
 }
 
+friend: 
+
+enable_if:
+
+is_integral >
+
+equal/lexicographical compare
+
+std::pair
+
+std::make_pair:
 
 _allocator:
 
