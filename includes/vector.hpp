@@ -48,12 +48,12 @@ namespace ft
 			public:
 				//	****Constructor*****
 				//Default
-				explicit vector(const allocator_type& alloc = allocator_type()) :  _allocator(alloc), _size(0), _capacity(0), _array(NULL) 
+				explicit vector(const allocator_type & alloc = allocator_type()) :  _allocator(alloc), _size(0), _capacity(0), _array(NULL) 
 			{
 				return;
 			}
 				//fill
-				explicit vector (size_type n, const value_type & val = value_type(), const allocator_type & alloc = allocator_type()): _allocator(alloc), _size(n), _capacity(_size), _array(alloc.allocate(_capacity))
+				explicit vector (size_type n, const value_type & val = value_type(), const allocator_type & alloc = allocator_type()): _allocator(alloc), _size(n), _capacity(_size), _array(_allocator.allocate(_capacity))
 			{
 				for (size_type i = 0; i < _size; i++)
 					_allocator.construct(_array + i, val);
@@ -63,7 +63,7 @@ namespace ft
 				//range
 				template <class InputIterator>
 					vector (InputIterator first, InputIterator last,
-							const allocator_type& alloc = allocator_type()) : _allocator(alloc), _size(0), _capacity(0), _array(NULL)
+							const allocator_type& alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InputIterator>::value, bool>::type =true) : _allocator(alloc), _size(0), _capacity(0), _array(NULL)
 			{
 				size_type n = 0;
 				for (InputIterator it = first; it != last; it++)
@@ -87,7 +87,7 @@ namespace ft
 				//copy
 				vector (const vector & x) : _allocator(x._allocator), _size(x._size), _capacity(x._capacity), _array(NULL)
 			{
-				if (x.size == 0)
+				if (x.size() == 0)
 					return;
 				_array = _allocator.allocate(_capacity);
 				for (size_type i = 0; i < x._size; i++)
@@ -102,14 +102,14 @@ namespace ft
 				{
 					if (*this == x)
 						return (*this);
-					~vector();
+					this->~vector();
 					vector tmp(x);
 					this->swap(tmp);
 					return (*this);
 				}
 
 				//Destructor
-				~vector()
+			virtual	~vector()
 				{
 					this->clear();
 					if (_capacity != 0)
@@ -217,7 +217,7 @@ namespace ft
 						newarray = _allocator.allocate(n);
 						for (size_type i = 0; i < _size; i++)
 							_allocator.construct(newarray + i, _array[i]);
-						~vector();
+						this->~vector();
 						_capacity = n;
 						_array = newarray;
 					}
@@ -266,7 +266,7 @@ namespace ft
 
 				//Modifiers
 				template <typename InputIterator>
-					void	assign(InputIterator first, InputIterator last)
+					void	assign(InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value, bool>::type =true)
 					{
 						this->clear();
 						size_type new_size = 0;
@@ -304,7 +304,7 @@ namespace ft
 					/*if (_size == 0)
 					  return;
 					  */
-					_allocator.destroy(this->end() - 1);
+					_allocator.destroy(_array + _size);
 					_size--;
 				}
 				iterator insert (iterator position, const value_type &val)
@@ -340,7 +340,7 @@ namespace ft
 					void insert (iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value, bool>::type = true)
 					{
 						// nbr d'element a inserer
-						size_type n;
+						size_type n = 0;
 
 						for (InputIterator it = first; it != last; it++)
 							n++;
@@ -361,7 +361,7 @@ namespace ft
 						}
 						while (first != last)
 						{
-							_allocator.construst(_array + index, *first);
+							_allocator.construct(_array + index, *first);
 							first++;
 							index++;
 							_size++;
@@ -409,6 +409,7 @@ namespace ft
 						_allocator.destroy(last._ptr + i);
 					}
 					_size -= count;
+					return (first);
 				}
 
 				void swap(vector& x)
@@ -419,14 +420,14 @@ namespace ft
 					pointer			tmp_array	= _array;
 
 					_array = x._array;
-					_capacity = x.capacity;
-					_size = x.size;
-					_allocator = x.get_allocator;
+					_capacity = x._capacity;
+					_size = x._size;
+					_allocator = x._allocator;
 
 					x._array = tmp_array;
 					x._allocator = tmp_alloc;
 					x._size = tmp_size;
-					x.capacity = tmp_cap;
+					x._capacity = tmp_cap;
 				}
 
 				void	clear()

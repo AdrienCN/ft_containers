@@ -25,8 +25,7 @@ namespace ft
 			iterator_vector(iterator_vector const & src) : _ptr(src._ptr) {}
 			iterator_vector & operator=(iterator_vector const &src)
 			{
-				if (*this != &src)
-					this->_ptr = src._ptr;
+				this->_ptr = src._ptr;
 				return *this;
 			}
 
@@ -41,7 +40,7 @@ namespace ft
 			}
 
 			//T++
-			iterator_vector & operator++(T)
+			iterator_vector operator++(int)
 			{
 				iterator_vector tmp(*this);
 				_ptr++;
@@ -80,24 +79,24 @@ namespace ft
 				return *this;
 			}
 
-			iterator_vector & operator--(T)
+			iterator_vector operator--(int)
 			{
 				iterator_vector tmp(*this);
 				_ptr--;
 				return *this;
 			}
 
-			iterator_vector & operator+(difference_type n) const
+			iterator_vector  operator+(difference_type n) const
 			{
 				return (this->_ptr + n);
 			}
 
-			friend iterator_vector & operator+(difference_type n, iterator_vector const & rhs)
+			friend iterator_vector  operator+(difference_type n, iterator_vector const & rhs)
 			{
 				return (rhs._ptr + n);
 			}
 
-			iterator_vector & operator-(difference_type n)
+			iterator_vector  operator-(difference_type n)
 			{
 				return (this->_ptr  - n);
 			}
@@ -156,6 +155,7 @@ namespace ft
 		typedef ft::random_access_tag	iterator_category;
 
 		//		****Attribut****
+		public :
 		pointer		_ptr;
 		//Constructor
 		const_iterator_vector(){}
@@ -184,7 +184,7 @@ namespace ft
 		}
 
 		//T++
-		const_iterator_vector & operator++(T)
+		const_iterator_vector operator++(int)
 		{
 			const_iterator_vector tmp(*this);
 			_ptr++;
@@ -223,7 +223,7 @@ namespace ft
 			return *this;
 		}
 
-		const_iterator_vector & operator--(T)
+		const_iterator_vector  operator--(int)
 		{
 			const_iterator_vector tmp(*this);
 			_ptr--;
@@ -235,19 +235,19 @@ namespace ft
 			return (this->_ptr + n);
 		}
 
-		friend const_iterator_vector & operator+(difference_type n, const_iterator_vector const & rhs)
+		friend const_iterator_vector operator+(difference_type n, const_iterator_vector const & rhs)
 		{
-			return (n + rhs._ptr);
+			return (const_iterator_vector(n + rhs._ptr));
 		}
 
-		const_iterator_vector & operator-(difference_type n)
+		const_iterator_vector & operator-(difference_type n) const
 		{
 			return (this->_ptr  - n);
 		}
 
-		difference_type  operator-(const_iterator_vector const & rhs)
+		friend difference_type operator-(const_iterator_vector const & lhs, const_iterator_vector const & rhs)
 		{
-			return (this->_ptr - rhs._ptr);
+			return (lhs._ptr - rhs._ptr);
 		}
 
 		bool operator<(const_iterator_vector const & rhs)
