@@ -1,2 +1,2 @@
 # ft_containers
-![Alt Text](https://giphy.com/embed/uTYR5bOktNNWsbgRAb)
+![Alt Text](https://media.giphy.com/media/uTYR5bOktNNWsbgRAb/giphy.gif)
