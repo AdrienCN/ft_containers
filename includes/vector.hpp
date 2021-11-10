@@ -102,7 +102,6 @@ namespace ft
 				{
 					if (*this == x)
 						return (*this);
-					this->~vector();
 					vector tmp(x);
 					this->swap(tmp);
 					return (*this);
@@ -176,10 +175,7 @@ namespace ft
 					if (n < _size)
 					{
 						for (size_type i = n; i < _size; i++)
-						{
 							_allocator.destroy(_array + i);
-							_allocator.deallocate(_array + i, 1);
-						}
 						_size = n;
 						// _allocator.deallocate(_array + n, (n - _size));
 						//reduce size;
