@@ -31,6 +31,16 @@ main
 }
 
 friend: 
+permet a une fonction NON MEMBRE d'acceder aux attributs public et prive d'une classe
+class  exemple
+{
+	friend friend_function_name(parameters);
+};
+
+void	friend_function_name(paramaters)
+{
+	actual code here;
+}
 
 enable_if:
 
