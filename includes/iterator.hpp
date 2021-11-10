@@ -1,6 +1,9 @@
 #ifndef ITERATOR_HPP
 #define ITERATOR_HPP
 
+// std::ptrdiff_t
+#include <cstddef> 
+
 namespace ft
 {
 	struct input_iterator_tag{};
