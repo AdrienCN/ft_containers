@@ -1,8 +1,8 @@
 SRCS		= main.cpp
 		  
-OBJ_DIR		= objs/
+#OBJ_DIR		= objs/
 
-OBJS		= $(addprefix $(OBJ_DIR), ${SRCS:.cpp=.o})
+OBJS		= $(SRCS:.cpp=.o)
 
 HEADER		= -I includes
 
@@ -16,7 +16,7 @@ NAME = ft_containers
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(HEADER) -c $< -o $(<:.cpp=.o)
 
-$(NAME): $(OBJS)
+$(NAME): $(OBJS) 
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
 
 all :$(NAME)
