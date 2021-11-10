@@ -319,21 +319,21 @@ namespace ft
 					if (n == 0)
 						return;
 					size_type index = position._ptr - _array; //emplacement de la position ?
-					while (_size + n >= _capacity)
-						this->reserve(SPACE);
+					if (_size + n >= _capacity)
+						this->reserve(SPACE + n);
 					vector tmp_array(iterator(_array + index), iterator(this->end()));
 					//detruire tout les elements depuis index
 					for (size_type i = index; i < _size; i++)
 					{
 						_allocator.destroy(_array + i);
-						_size--;
 					}
 					//Insere les new elements
 					for (size_type i = 0; i < n; i++)
 						this->push_back(val);
 					//Reinsere les elements detruits APRES les new elements
-					for (iterator it = tmp_array.begin(); it != tmp_array.end(); it ++)
+					for (iterator it = tmp_array.begin(); it != tmp_array.end(); it++)
 						this->push_back(*it);
+					_size += n;
 				}
 
 				template <typename InputIterator>
@@ -352,25 +352,21 @@ namespace ft
 
 						//Vector qui retient tout apres "position"
 						vector tmp_array(iterator(_array + index), iterator(this->end()));
-						while (_size + n >= _capacity)
-							this->reserve(SPACE);
+						if (_size + n >= _capacity)
+							this->reserve(SPACE + n);
 						for (size_type i = index; i < _size; i++)
 						{
 							_allocator.destroy(_array + i);
-							_size--;
 						}
 						while (first != last)
 						{
 							_allocator.construct(_array + index, *first);
 							first++;
 							index++;
-							_size++;
 						}
 						for (iterator it = tmp_array.begin(); it != tmp_array.end(); it++)
-						{
 							this->push_back(*it);
-							_size++;
-						}
+						_size +=n;
 					}
 
 
