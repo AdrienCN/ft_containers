@@ -28,13 +28,16 @@ namespace ft
 				typedef ft::reverse_iterator<const_iterator>		reverse_iterator;
 				typedef	std::ptrdiff_t								difference_type;
 				typedef std::size_t									size_type;
-
+		
+			protected:
 			//	****ATTRIBUTES****
 				
 				allocator_type	_allocator;
 				size_type	_size;
 				size_type	_capacity;
 				pointer		_array;
+
+			public:
 			//	****Constructor*****
 				//Default
 				explicit vector(const allocator_type& alloc = allocator_type()) :  _allocator(alloc)_size(0), _array(NULL), _capacity(0) {};
@@ -313,9 +316,9 @@ namespace ft
 					for (iterator it = tmp_array.begin(); it != tmp_array.end(); it ++)
 						this->push_back(*it);
 				}
-
+				
 				template <typename InputIterator>
-					void insert (iterator position, InputIterator first, InputIterator last)
+					void insert (iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value, bool>::type = true)
 					{
 					   	// nbr d'element a inserer
 						size_type n;
@@ -332,7 +335,6 @@ namespace ft
 						vector tmp_array(iterator(_array + index), iterator(this->end()));
 						while (_size + n >= _capacity)
 							this->reserve(SPACE);
-						
 						for (size_type i = index; i < _size; i++)
 						{
 							_allocator.destroy(_array + i);
@@ -353,7 +355,43 @@ namespace ft
 					}
 
 
-				erase;
+				iterator erase (iterator position)
+				{
+					if (this->empty() || position == this->end())
+						return (this->end());
+
+					if ((position + 1) == this->end())
+					{
+						this->pop_back();
+						return (this->end());
+					}
+
+					_allocator.destroy(position._ptr);
+					for (iterator pos = position; pos + 1 != this->end(); pos++)
+					{
+						_allocator.construct(pos._ptr, *(pos._ptr + 1));
+						_allocator.destroy(pos._ptr + 1));
+					}
+					_size--;
+					return (iterator(ret));
+				}
+
+				}
+				iterator erase (iterator first, iterator last)
+				{
+					if (this->empty() || first == this->end())
+						return (this->end());
+					if (first == last)
+						return (first);
+					size_type count = last._ptr - first._ptr;
+					for (size_type i = 0; i < count; i++)
+					{
+						_allocator.destroy(first._ptr + i);
+						_allocator.construct(first._ptr + i, *(last._ptr + i));
+						_allocator.destroy(last._ptr + i);
+					}
+					size -= count;
+				}
 				
 				swap (vector& x)
 				{
