@@ -42,6 +42,9 @@ void	friend_function_name(paramaters)
 	actual code here;
 }
 
+-declarer une fonction FRIEND DANS la classe la fait elle devenir non membre ?
+
+
 enable_if:
 
 is_integral >
@@ -60,3 +63,5 @@ _iterator:
 
 _explicit:
 
+
+_virtual:

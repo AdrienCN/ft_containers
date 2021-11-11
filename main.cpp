@@ -4,6 +4,7 @@
 #include "reverse_iterator.hpp"
 #include "vector.hpp"
 #include "pair.hpp"
+#include "stack.hpp"
 #include <vector>
 
 
