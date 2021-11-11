@@ -87,7 +87,7 @@ namespace ft
 			{
 				iterator_vector tmp(*this);
 				_ptr--;
-				return *this;
+				return tmp;
 			}
 
 			iterator_vector  operator+(difference_type n) const
@@ -232,7 +232,7 @@ namespace ft
 			{
 				const_iterator_vector tmp(*this);
 				_ptr--;
-				return *this;
+				return tmp;
 			}
 
 			const_iterator_vector  operator+(difference_type n) const
