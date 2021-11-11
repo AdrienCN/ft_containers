@@ -42,23 +42,18 @@ namespace ft
 
 				virtual ~reverse_iterator() {}
 
-				//---> Other member functions
-
-				//___________ base() : Return the base iterator
 				iterator_type base() const
 				{
 					return this->_current;
 				}
 
-				//____________ operators
-				// La majorité des opération sont -n car c'est un reverse it donc reverse order
 
 				reverse_iterator operator+(difference_type n) const
 				{
-					return reverse_iterator(base() - n); //_current -n possible
+					return reverse_iterator(base() - n);
 				}
 
-				reverse_iterator& operator+=(difference_type n) //on modifie egalement current
+				reverse_iterator& operator+=(difference_type n) 
 				{
 					_current -= n;
 					return *this;
@@ -73,8 +68,7 @@ namespace ft
 				reverse_iterator operator++(int)
 				{
 					reverse_iterator tmp = *this;
-					++(*this);
-					//_current--;
+					_current--;
 					return tmp;
 				}
 
@@ -98,35 +92,32 @@ namespace ft
 				reverse_iterator operator--(int)
 				{
 					reverse_iterator tmp = *this;
-					--(*this);
-					// _current++;
+					 _current++;
 					return tmp;
 				}
 
-				reference operator*() const // A RECHECKER retour function
+				reference operator*() const
 				{
 					iterator_type tmp(_current);
 					tmp--;
-					return *tmp; //return a reference to the element previous to current
+					return *tmp; 
 				}
 
-				pointer operator->() const // A RECHECKER retour function
+				pointer operator->() const 
 				{
 					return &(this->operator*());
 				}
 
 				reference operator[](difference_type n) const
 				{
-					return base()[-n -1]; //brunet != 
+					return base()[-n -1]; 
 				}
 
-			protected: //or private?
+			protected:
 				iterator_type _current;
 		};
 
 	//  ********** NON MEMBER FUNCTIONS OVERLOADS ********** 
-
-	//---> Relational operators
 
 	template <class Iterator1, class Iterator2>
 		bool operator==(const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs)
@@ -163,8 +154,6 @@ namespace ft
 		{
 			return lhs.base() <= rhs.base();
 		}
-
-	//---> Operator + et - ===> A RECHECKER LES retours des functions
 
 	template <class Iterator>
 		reverse_iterator<Iterator> operator+(typename reverse_iterator<Iterator>::difference_type n, const reverse_iterator<Iterator>& it)

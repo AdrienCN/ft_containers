@@ -54,13 +54,11 @@ namespace ft
 
 			//changer pour 
 			bool operator==(ft::const_iterator_vector<T> const & rhs) const
-				//bool operator==(iterator_vector const & src)
 			{
 				return (_ptr == rhs._ptr);
 			}
 
 			bool operator!=(ft::const_iterator_vector<T> const & rhs) const
-				//	bool operator!=(iterator_vector const & src)
 			{
 				return (_ptr != rhs._ptr);
 			}
