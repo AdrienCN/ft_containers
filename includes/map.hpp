@@ -3,13 +3,34 @@
 
 namespace ft
 {
-	typedef struct node
-	{
-		struct node *parent;
-		struct node *left;
-		struct node *right;
-		pair <T1, T2> _pr;
-	}				t_node;
+	template <class value_type > 
+		class node
+		{
+			public:
+			//attribut
+			struct node			*parent;
+			struct node			*left;
+			struct node			*right;
+			value_type			_pr;
+			//constructeur
+			
+
+			node* findMinChild(const node & subtree)
+			{
+				node *current = subtree;
+				while (current->left)
+						current = current->left;
+				return current;
+			}
+
+			node* findMaxChild(const node & subtree)
+			{
+				node* current = subtree;
+				while (current->right)
+					current = current->right;
+				return current;
+			}
+		};
 
 
 	template <class Key, class T, class Compare = ft::less<key>, class Alloc = std::allocator<pair<const Key, T> > >
