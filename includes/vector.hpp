@@ -8,8 +8,6 @@
 #include <stdexcept>
 #include <memory>
 
-#include <iostream>
-
 //std::allocator
 
 #define SPACE _size * 2		
@@ -223,7 +221,7 @@ namespace ft
 						_array = newarray;
 					}
 				}
-				
+
 				//Element access
 				reference	operator[](size_type n)
 				{
@@ -309,15 +307,12 @@ namespace ft
 					_allocator.destroy(_array + _size);
 					_size--;
 				}
-				
+
 				iterator insert (iterator position, const value_type &val)
 				{
 					size_type pos = position._ptr - _array;
 					if (position == this->end())
-					{
-						std::cout << "push_back 1" << std::endl;
 						this->push_back(val);
-					}
 					else
 						this->insert(position, 1, val);
 					return (iterator(this->begin() + pos));
@@ -330,10 +325,7 @@ namespace ft
 					if (position == this->end())
 					{
 						for (size_type i = 0; i < n; i++)
-						{
-							std::cout << "push_back 2" << std::endl;
 							this->push_back(val);
-						}
 						return;
 					}
 					size_type start = position._ptr - _array; 
@@ -381,71 +373,6 @@ namespace ft
 						}
 						_size +=n;
 					}
-/*
-iterator insert(iterator position, const value_type& val)
-            {
-                difference_type elmt = position._ptr - this->_array; // important car apres reserve, iterator plus bon!!
-                this->insert(position, 1, val);
-                return iterator(this->begin() + elmt);
-            }
-            
-            void insert(iterator position, size_type n, const value_type& val)
-            {
-                difference_type elmt = position._ptr - this->_array; // important car apres reserve, iterator plus bon!!
-
-                if (n == 0)
-                    return;
-                if (this->_size + n > this->_size * 2)
-                    this->reserve(this->_size + n);
-                else if (this->_size + n > this->_capacity)
-                    this->reserve(this->_size * 2);
-
-                for(pointer it = this->_array + this->_size + n - 1, ite = this->_array + elmt + n - 1; it != ite; --it) 
-                {
-                    this->_allocator.construct(it, *(it - n));
-                    this->_allocator.destroy(it - n);
-                }
-                this->_size += n;
-                while (n > 0)
-                {
-                    this->_allocator.construct(this->_array + elmt - 1 + n, val);
-                    n--;
-                }
-                return;
-            }
-            
-            template<class InputIterator>
-            void insert(iterator position, InputIterator first, InputIterator last,
-                            typename ft::enable_if<!ft::is_integral<InputIterator>::value, bool>::type = true) 
-            {
-                if (first == last)
-                    return;
-                
-                difference_type elmt = position._ptr - this->_array;
-
-                size_type n = 0;
-                for (InputIterator it = first; it != last; it++)
-                    n++;
-                if (this->_size + n > this->_size * 2)
-                    this->reserve(this->_size + n);
-                else if (this->_size + n > this->_capacity)
-                    this->reserve(this->_size * 2);
-
-                for(pointer it = this->_array + this->_size + n - 1, ite = this->_array + elmt + n - 1; it != ite; it--) 
-                {
-                    this->_allocator.construct(it, *(it - n));
-                    this->_allocator.destroy(it - n);
-                }
-                this->_size += n;
-                while (n > 0)
-                {
-                    last--;
-                    this->_allocator.construct(this->_array + elmt - 1 + n, *last);
-                    n--;
-                }
-                return;
-            }
-			*/
 				iterator erase (iterator position)
 				{
 					if (this->empty() || position == this->end())
