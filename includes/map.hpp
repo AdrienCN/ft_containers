@@ -106,7 +106,26 @@ namespace ft
 				//Constructor
 				explicit map (const key_compare& comp = key_compare(),
 						const allocator_type& alloc = allocator_type())
-					: _root(NULL), _comp(comp), _allocator(alloc), _size(0) {}
+					: _root(NULL), _comp(comp), _allocator(alloc), _size(0) 
+				{
+					_root = new_node();
+					_begin = new_node();
+					_end = new_node();
+					
+					// begin <-- root R-->end
+					_root->parent = _begin; 
+					_root->right = _end;
+					
+					//begin L--> root | R -->root
+					_begin->left = _root;
+					_begin->right = _root;
+					_begin->parent = NULL;
+
+					// root <-- end
+					_end->parent = _root;
+					_end->right = NULL;
+					_end->left = NULL;
+				}
 
 				template <class InputIterator>
 					map (InputIterator first, InputIterator last,
@@ -138,33 +157,58 @@ namespace ft
 					//begin == root
 					iterator begin()
 					{
-						return (iterator(_root));
+						return (this->_root);
 					}
 					const_iterator begin() const
 					{
-						return (const_iterator(_root));
+						return (this->_root);
 					}
 
 					// empty right child of most right node
 					iterator end()
 					{
-						return (node(_end->right))
+						return (this->_end)
 					}
 					iterator end()
 					{
-						return (node(_end->right))
+						return (this->_end);
 					}
-					//end()-->parent
-					rbegin
 
+					//end()-->parent ou  
+					iterator rbegin()
+					{
+						return (_end->_parent);
+					}
+					const_iterator rbegin() const
+					{
+						return (_end->_parent);
+					}
 					//rend() == Preroot
-					rend;
-
+					iterator rend()
+					{
+						return (this->_begin);
+					}
+					
+					const_iterator rend() const
+					{
+						return (this->_begin);
+					}
 
 					//Capacity
-					empty
-					size
-					max_size
+					bool empty() const
+					{
+						return (this->_size == 0 ? true : false);
+					}
+
+					size_type size() const
+					{
+						return (this->_size);
+					}
+
+					size_type max_size() const
+					{
+						return (this->_allocator.max_size());
+					}
 
 					//Element Access
 					operator[]
