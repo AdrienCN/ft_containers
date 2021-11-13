@@ -111,11 +111,11 @@ namespace ft
 					_root = new_node();
 					_begin = new_node();
 					_end = new_node();
-					
+
 					// begin <-- root R-->end
 					_root->parent = _begin; 
 					_root->right = _end;
-					
+
 					//begin L--> root | R -->root
 					_begin->left = _root;
 					_begin->right = _root;
@@ -130,19 +130,26 @@ namespace ft
 				template <class InputIterator>
 					map (InputIterator first, InputIterator last,
 							const key_compare& comp = key_compare(),
-							const allocator_type& alloc = allocator_type()) :
-						_root(NULL), _comp(comp), _allocator(alloc), _size(0)
-			{
-				for (InputIterator it(first) ; it != last; it++)
-					this->insert_node(*it, _root);
-			}
+							const allocator_type& alloc = allocator_type()) :_root(NULL), _comp(comp), _allocator(alloc), _size(0)
+					{
+						for (InputIterator it(first) ; it != last; it++)
+							this->insert_node(*it, _root);
+					}
+
 				map (const map& x) : _root(NULL), _comp(x._comp), _allocator(x._allocator), _size(0)
-			{
-				for (iterator it = x.begin(); it != x.end(); it++)
 				{
-					this->insert_node(*it, _root);
+					for (iterator it = x.begin(); it != x.end(); it++)
+						this->insert_node(*it, _root);
 				}
-			}
+
+				map & operator=(const map& x)
+				{
+					if (*this == x)
+						return *this;
+					map tmp(x);
+					this.swap(tmp);
+					return *this;
+				}
 
 
 				virtual ~map()
@@ -153,66 +160,80 @@ namespace ft
 					this->_free_node(_root);
 				}
 
-					//Iterator
-					//begin == root
-					iterator begin()
-					{
-						return (this->_root);
-					}
-					const_iterator begin() const
-					{
-						return (this->_root);
-					}
+				//Iterator
+				//begin == root
+				iterator begin()
+				{
+					return (_root->findMinChild(_root));
+				}
+				const_iterator begin() const
+				{
+					return (_root->findMinChild(_root));
+				}
 
-					// empty right child of most right node
-					iterator end()
-					{
-						return (this->_end)
-					}
-					iterator end()
-					{
-						return (this->_end);
-					}
+				// empty right child of most right node
+				iterator end()
+				{
+					if (this->empty()) // defini dans cplusplus
+						return (this->begin());
+					return (this->_end)
+				}
+				const_iterator end() const
+				{
+					if (this->empty())
+						return (this->begin());
+					return (this->_end);
+				}
 
-					//end()-->parent ou  
-					iterator rbegin()
-					{
-						return (_end->_parent);
-					}
-					const_iterator rbegin() const
-					{
-						return (_end->_parent);
-					}
-					//rend() == Preroot
-					iterator rend()
-					{
-						return (this->_begin);
-					}
-					
-					const_iterator rend() const
-					{
-						return (this->_begin);
-					}
+				//end()-->parent ou  
+				iterator rbegin()
+				{
+					return (_end->_parent);
+				}
+				const_iterator rbegin() const
+				{
+					return (_end->_parent);
+				}
+				//rend() == Preroot
+				iterator rend()
+				{
+					return (this->_begin);
+				}
 
-					//Capacity
-					bool empty() const
+				const_iterator rend() const
+				{
+					return (this->_begin);
+				}
+
+				//Capacity
+				bool empty() const
+				{
+					return (this->_size == 0 ? true : false);
+				}
+
+				size_type size() const
+				{
+					return (this->_size);
+				}
+
+				size_type max_size() const
+				{
+					return (this->_allocator.max_size());
+				}
+
+				//Element Access
+				mapped_type & operator[](const key_type &k)
+				{
+					node *needle = find_node_key(_root);
+					if (needle)
+						return (needle->_pr.second);
+					else
 					{
-						return (this->_size == 0 ? true : false);
+						node *new_node = create_node(value_type (k, mapped_type()));
+						_insert(new_node);
+						return mapped_type();
 					}
-
-					size_type size() const
-					{
-						return (this->_size);
-					}
-
-					size_type max_size() const
-					{
-						return (this->_allocator.max_size());
-					}
-
-					//Element Access
-					operator[]
-
+				}
 
 					//Modifiers
 					insert
