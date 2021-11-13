@@ -56,7 +56,7 @@ namespace ft
 		class map
 		{
 			public:
-				
+
 				typedef Key		key_type;
 				typedef T		mapped_type;
 				typedef typename ft::pair<const key_type, mapped_type>	value_type;
@@ -67,8 +67,8 @@ namespace ft
 				typedef allocator_type::pointer							pointer	;
 				typedef allocator_type::const_pointer					const_pointer;
 
-				typedef iterator_map<value_type>						iterator;
-				typedef const_iterator_map<value_type>					const_iterator;
+				typedef ft::iterator_map<value_type>						iterator;
+				typedef ft::const_iterator_map<value_type>					const_iterator;
 
 				typedef ft::reverse_iterator<iterator>					reverse_iterator;
 				typedef ft::const_reverse_iterator<iterator>			const_reverse_iterator;
@@ -80,11 +80,9 @@ namespace ft
 					protected:
 						//Objet de type std::less<key_type>
 						Compare					_comp;
-
 						//Constructeur
 						value_compare (Compare c) : _comp(c) {};
 					public:
-
 						//value_type = pair<Key, Map>
 						bool operator()(const value_type &x, const value_type, &y) const
 						{
@@ -92,57 +90,111 @@ namespace ft
 							return _comp(x.first, y.first);
 						}
 				}
-				
+
 			protected:
 				//Attribut
-				t_node *		_root;
+				t_node*		_root; // root node
+				t_node*		_end; //EMPTY right child of the most right node ---->  end
+				t_node*		_begin; // PREroot node ---> rend
 				key_compare		_comp;
 				allocator_type	_allocator;
+				size_type		_size;
 
 
 			public:
 
 				//Constructor
+				explicit map (const key_compare& comp = key_compare(),
+						const allocator_type& alloc = allocator_type())
+					: _root(NULL), _comp(comp), _allocator(alloc), _size(0) {}
+
+				template <class InputIterator>
+					map (InputIterator first, InputIterator last,
+							const key_compare& comp = key_compare(),
+							const allocator_type& alloc = allocator_type()) :
+						_root(NULL), _comp(comp), _allocator(alloc), _size(0)
+			{
+				for (InputIterator it(first) ; it != last; it++)
+					this->insert_node(*it, _root);
+			}
+				map (const map& x) : _root(NULL), _comp(x._comp), _allocator(x._allocator), _size(0)
+			{
+				for (iterator it = x.begin(); it != x.end(); it++)
+				{
+					this->insert_node(*it, _root);
+				}
+			}
 
 
+				virtual ~map()
+				{
+					//detruit branche gauche puis droite
+					this->clear();
+					//detruire root
+					this->_free_node(_root);
+				}
 
-				//Iterator
+					//Iterator
+					//begin == root
+					iterator begin()
+					{
+						return (iterator(_root));
+					}
+					const_iterator begin() const
+					{
+						return (const_iterator(_root));
+					}
 
-				
-				//Capacity
-				empty
-				size
-				max_size
+					// empty right child of most right node
+					iterator end()
+					{
+						return (node(_end->right))
+					}
+					iterator end()
+					{
+						return (node(_end->right))
+					}
+					//end()-->parent
+					rbegin
 
-				//Element Access
-				operator[]
-				
-
-				//Modifiers
-				insert
-				erase
-				swap
-				clear
-
-				//Observer
-				key_comp
-				value_comp
+					//rend() == Preroot
+					rend;
 
 
-				//Operation
-				find
-				count
-				lower_bound
-				upper_bound
-				equal_range
+					//Capacity
+					empty
+					size
+					max_size
 
-				//Allocator
-				
+					//Element Access
+					operator[]
+
+
+					//Modifiers
+					insert
+					erase
+					swap
+					clear
+
+					//Observer
+					key_comp
+					value_comp
+
+
+					//Operation
+					find
+					count
+					lower_bound
+					upper_bound
+					equal_range
+
+					//Allocator
+
 
 			private :
-				//Mes fonctions utils perso
+					//Mes fonctions utils perso
 
-				//fin de class map
+					//fin de class map
 		};
 	//end of ft namespace
 };
