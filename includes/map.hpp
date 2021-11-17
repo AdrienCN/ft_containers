@@ -4,54 +4,16 @@
 //std::less
 #include <functional>
 
+//std::allocator
+#include <memory>
+#include "iterator.hpp"
+#include "condition.hpp"
+#include "pair.hpp"
+#include "reverse_iterator.hpp"
+#include "iterator_map.hpp"
+#include "node.hpp"
 namespace ft
 {
-	template <class value_type > 
-		class node
-		{
-			public:
-				//constructeur
-				node (void) : _parent(NULL), _left(NULL), _right(NULL) {}
-				node (const value_type & pr) : _parent(NULL), _left(NULL), _right(NULL), _pr(pr) {}
-				node (const node &src) : _parent(src._parent), _left(src._left), _right(src._right), _pr(src._pr) {};
-				node & operator=(const node &src)
-				{
-					if (*this == src)
-						return *this;
-					_parent = src._parent;
-					_left = src._left;
-					_right = src._right;
-					_pr = src._pr;
-					return *this;
-				}
-
-				//**Attribut
-				node			*parent;
-				node			*left;
-				node			*right;
-				value_type			_pr;
-
-				//Function membre
-
-				node* findMinChild(const node & subtree)
-				{
-					node *current = subtree;
-					while (current->left)
-						current = current->left;
-					return current;
-				}
-
-				node* findMaxChild(const node & subtree)
-				{
-					node* current = subtree;
-					while (current->right)
-						current = current->right;
-					return current;
-				}
-				//end of node class
-		};
-
-
 	template <class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<pair<const Key, T> > >
 		class map
 		{
@@ -62,18 +24,19 @@ namespace ft
 				typedef typename ft::pair<const key_type, mapped_type>	value_type;
 				typedef	Compare											key_compare;
 				typedef Alloc											allocator_type;	
-				typedef allocator_type::reference						reference;
-				typedef	allocator_type::const_reference					const_reference;
-				typedef allocator_type::pointer							pointer	;
-				typedef allocator_type::const_pointer					const_pointer;
+				typedef typename allocator_type::reference						reference;
+				typedef	typename allocator_type::const_reference					const_reference;
+				typedef typename allocator_type::pointer							pointer	;
+				typedef typename allocator_type::const_pointer					const_pointer;
 
 				typedef ft::iterator_map<value_type>						iterator;
 				typedef ft::const_iterator_map<value_type>					const_iterator;
 
-				typedef ft::reverse_iterator<iterator>					reverse_iterator;
-				typedef ft::const_reverse_iterator<iterator>			const_reverse_iterator;
-				typedef ft::iterator_traits<iterator>::difference_type	difference_type;
+				typedef typename ft::reverse_iterator<iterator>					reverse_iterator;
+				typedef typename ft::reverse_iterator<const_iterator>			const_reverse_iterator;
+				typedef typename ft::iterator_traits<iterator>::difference_type	difference_type;
 				typedef	std::size_t										size_type;
+				typedef node<value_type>								node;
 
 				class value_compare
 				{
@@ -84,18 +47,18 @@ namespace ft
 						value_compare (Compare c) : _comp(c) {};
 					public:
 						//value_type = pair<Key, Map>
-						bool operator()(const value_type &x, const value_type, &y) const
+						bool operator()(const value_type &x, const value_type &y) const
 						{
 							//std::less()(Key x, Key y)
 							return _comp(x.first, y.first);
 						}
-				}
+				};
 
 			protected:
 				//Attribut
-				t_node*		_root; // root node
-				t_node*		_end; //EMPTY right child of the most right node ---->  end
-				t_node*		_begin; // PREroot node ---> rend
+				node*		_root; // root node
+				node*		_end; //EMPTY right child of the most right node ---->  end
+				node*		_preRoot; // PREroot node ---> rend
 				key_compare		_comp;
 				allocator_type	_allocator;
 				size_type		_size;
@@ -108,18 +71,18 @@ namespace ft
 						const allocator_type& alloc = allocator_type())
 					: _root(NULL), _comp(comp), _allocator(alloc), _size(0) 
 				{
-					_root = new_node();
-					_begin = new_node();
-					_end = new_node();
+					_root = _new_node();
+					_preRoot = _new_node();
+					_end = _new_node();
 
 					// begin <-- root R-->end
-					_root->parent = _begin; 
+					_root->parent = _preRoot; 
 					_root->right = _end;
 
 					//begin L--> root | R -->root
-					_begin->left = _root;
-					_begin->right = _root;
-					_begin->parent = NULL;
+					_preRoot->left = _root;
+					_preRoot->right = _root;
+					_preRoot->parent = NULL;
 
 					// root <-- end
 					_end->parent = _root;
@@ -133,13 +96,13 @@ namespace ft
 							const allocator_type& alloc = allocator_type()) :_root(NULL), _comp(comp), _allocator(alloc), _size(0)
 					{
 						for (InputIterator it(first) ; it != last; it++)
-							this->insert_node(*it, _root);
+							this->insert(*it, _root);
 					}
 
 				map (const map& x) : _root(NULL), _comp(x._comp), _allocator(x._allocator), _size(0)
 				{
 					for (iterator it = x.begin(); it != x.end(); it++)
-						this->insert_node(*it, _root);
+						this->insert(*it, _root);
 				}
 
 				map & operator=(const map& x)
@@ -147,7 +110,7 @@ namespace ft
 					if (*this == x)
 						return *this;
 					map tmp(x);
-					this.swap(tmp);
+					this->swap(tmp);
 					return *this;
 				}
 
@@ -176,7 +139,7 @@ namespace ft
 				{
 					if (this->empty()) // defini dans cplusplus
 						return (this->begin());
-					return (this->_end)
+					return (this->_end);
 				}
 				const_iterator end() const
 				{
@@ -188,21 +151,21 @@ namespace ft
 				//end()-->parent ou  
 				iterator rbegin()
 				{
-					return (_end->_parent);
+					return (this->end()); //selon moi ajouter - 1);
 				}
 				const_iterator rbegin() const
 				{
-					return (_end->_parent);
+					return (this->end()); // selon moi ajouter - 1);
 				}
 				//rend() == Preroot
 				iterator rend()
 				{
-					return (this->_begin);
+					return (this->_preRoot);
 				}
 
 				const_iterator rend() const
 				{
-					return (this->_begin);
+					return (this->_preRoot);
 				}
 
 				//Capacity
@@ -224,24 +187,32 @@ namespace ft
 				//Element Access
 				mapped_type & operator[](const key_type &k)
 				{
-					node *needle = find_node_key(_root);
+					node *needle = _find_node_key(_root);
 					if (needle)
 						return (needle->_pr.second);
 					else
 					{
 						node *new_node = create_node(value_type (k, mapped_type()));
-						_insert(new_node);
+						this->insert(new_node);
 						return mapped_type();
 					}
 				}
 
 					//Modifiers
-					insert
-					erase
+					void insert(const iterator it, node *node) 
+					{
+						(void)it;
+						(void)node;
+					}
+					void insert(node *node) 
+					{
+						(void)node;
+					}
+				/*	erase
 					swap
-					clear
+				*/	void clear() {}
 
-					//Observer
+				/*	//Observer
 					key_comp
 					value_comp
 
@@ -256,8 +227,21 @@ namespace ft
 					//Allocator
 
 
+					//autes
+				*/	void swap(const value_type & x)
+					{
+						(void)x;
+					}
+
 			private :
 					//Mes fonctions utils perso
+					node*	_find_node_by_key() {}
+					node*	_new_node() {}
+					node*	_new_node(const value_type & x)
+					{
+						(void)x;
+					}
+					void	_free_node() {}
 
 					//fin de class map
 		};

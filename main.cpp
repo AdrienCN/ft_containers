@@ -2,9 +2,11 @@
 #include "iterator.hpp"
 #include "iterator_vector.hpp"
 #include "reverse_iterator.hpp"
+#include "iterator_map.hpp"
 #include "vector.hpp"
 #include "pair.hpp"
 #include "stack.hpp"
+#include "map.hpp"
 #include <vector>
 
 

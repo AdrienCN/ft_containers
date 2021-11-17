@@ -1,5 +1,6 @@
 #ifndef ITERATOR_MAP
 #define ITERATOR_MAP
+#include  "node.hpp"
 
 namespace ft
 {
@@ -33,12 +34,12 @@ namespace ft
 
 			bool operator==(const iterator_map & rhs)
 			{
-				return (_ptr == rhs)
+				return (_ptr == rhs);
 			}
 
 			bool operator!=(const iterator_map & rhs)
 			{
-				return (_ptr != rhs)
+				return (_ptr != rhs);
 			}
 
 			reference operator*() const
@@ -48,7 +49,7 @@ namespace ft
 
 			pointer operator->() const
 			{
-				return (&(_ptr->_pr))
+				return (&(_ptr->_pr));
 			}
 
 			iterator_map & operator++()
@@ -83,7 +84,7 @@ namespace ft
 			iterator_map & operator--()
 			{
 				if (_ptr->left)
-					_ptr = findMaxChild(ptr->left);
+					_ptr = findMaxChild(_ptr->left);
 				else
 				{
 					node *parent = _ptr->parent;
@@ -124,7 +125,7 @@ namespace ft
 			const_iterator_map () : _ptr(NULL) {};
 			const_iterator_map (node *ptr) : _ptr(ptr) {};
 			const_iterator_map (const const_iterator_map &src) : _ptr(src._ptr) {};
-			const_iterator_map (const const_iterator_map<T> &src) : _ptr(src._ptr) {};
+		//	const_iterator_map (const const_iterator_map<T> &src) : _ptr(src._ptr) {};
 			const_iterator_map & operator=(const const_iterator_map & src)
 			{
 				if (*this == src)
@@ -137,12 +138,12 @@ namespace ft
 
 			bool operator==(const const_iterator_map & rhs)
 			{
-				return (_ptr == rhs)
+				return (_ptr == rhs);
 			}
 
 			bool operator!=(const const_iterator_map & rhs)
 			{
-				return (_ptr != rhs)
+				return (_ptr != rhs);
 			}
 
 			reference operator*() const
@@ -152,7 +153,7 @@ namespace ft
 
 			pointer operator->() const
 			{
-				return (&(_ptr->_pr))
+				return (&(_ptr->_pr));
 			}
 
 			const_iterator_map & operator++()
@@ -187,7 +188,7 @@ namespace ft
 			const_iterator_map & operator--()
 			{
 				if (_ptr->left)
-					_ptr = findMaxChild(ptr->left);
+					_ptr = findMaxChild(_ptr->left);
 				else
 				{
 					node *parent = _ptr->parent;
