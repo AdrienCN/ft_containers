@@ -15,10 +15,11 @@
 
 #define TEST int
 #define TESTED_NAMESPACE ft
-
+#define MAP int, int
 
 int main()
 {
+	ft::map<MAP> map;
 	ft::vector<TEST> one(5, 3);
 	std::vector<TEST> std(5, 3);
 	for (size_t i = 0; i < one.size(); i++)

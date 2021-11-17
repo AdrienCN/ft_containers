@@ -8,25 +8,25 @@ namespace ft
 		{
 			public:
 				//constructeur
-				node (void) : _parent(NULL), _left(NULL), _right(NULL) {}
-				node (const value_type & pr) : _parent(NULL), _left(NULL), _right(NULL), _pr(pr) {}
-				node (const node &src) : _parent(src._parent), _left(src._left), _right(src._right), _pr(src._pr) {};
+				node (void) : parent(NULL), left(NULL), right(NULL) {}
+				node (const value_type & pr) : parent(NULL), left(NULL), right(NULL), pr(pr) {}
+				node (const node &src) : parent(src.parent), left(src.left), right(src.right), pr(src.pr) {};
 				node & operator=(const node &src)
 				{
 					if (*this == src)
 						return *this;
-					_parent = src._parent;
-					_left = src._left;
-					_right = src._right;
-					_pr = src._pr;
+					parent = src.parent;
+					left = src.left;
+					right = src.right;
+					pr = src.pr;
 					return *this;
 				}
 
 				//**Attribut
-				node			*_parent;
-				node			*_left;
-				node			*_right;
-				value_type			_pr;
+				node			*parent;
+				node			*left;
+				node			*right;
+				value_type			pr;
 
 				//Function membre
 

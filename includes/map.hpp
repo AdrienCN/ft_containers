@@ -235,13 +235,23 @@ namespace ft
 
 			private :
 					//Mes fonctions utils perso
-					node*	_find_node_by_key() {}
-					node*	_new_node() {}
+					node*	_find_node_by_key() 
+					{
+						return (NULL);
+					}
+					node*	_new_node()
+					{
+						return (NULL);
+					}
 					node*	_new_node(const value_type & x)
 					{
 						(void)x;
+						return (NULL);
 					}
-					void	_free_node() {}
+					void	_free_node(node *subtree) 
+					{
+						(void)subtree;
+					}
 
 					//fin de class map
 		};
