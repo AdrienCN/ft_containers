@@ -8,9 +8,9 @@ namespace ft
 		{
 			public:
 				//constructeur
-				node (void) : parent(NULL), left(NULL), right(NULL) {}
-				node (const value_type & pr) : parent(NULL), left(NULL), right(NULL), pr(pr) {}
-				node (const node &src) : parent(src.parent), left(src.left), right(src.right), pr(src.pr) {};
+				node (void) : parent(NULL), left(NULL), right(NULL), height(0) {}
+				node (const value_type & pr) : parent(NULL), left(NULL), right(NULL), pr(pr), height(0) {}
+				node (const node &src) : parent(src.parent), left(src.left), right(src.right), pr(src.pr), height(src.height) {};
 				node & operator=(const node &src)
 				{
 					if (*this == src)
@@ -19,6 +19,7 @@ namespace ft
 					left = src.left;
 					right = src.right;
 					pr = src.pr;
+					height = src.height;
 					return *this;
 				}
 
@@ -26,6 +27,7 @@ namespace ft
 				node			*parent;
 				node			*left;
 				node			*right;
+				size_t			height;
 				value_type			pr;
 
 				//Function membre

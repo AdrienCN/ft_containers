@@ -287,17 +287,58 @@ namespace ft
 						return (node);
 
 					//calculer la nouvelle height
-					node->height = 
+					node->height = getHeight(node);
+
 					//balancer l'arbre apres l'insertion
-					bool balance = is_balanced(node);
+					bool balance = is_balanced(node, val);
 
 					if (balance == true)
 						return node;
 
 
 
-
 				}
+
+				bool is_balanced(node *node, const value_type &val)
+				{
+					int ret = getHeight(node->right) - getHeight(node->left);
+					//is balanced ok 
+					if  (ret >= -1 && ret <= 1)	
+						return (1);
+					//node is unbalanced
+					else
+					{
+						//Left branch is heavy
+						if (ret == - 1)
+						{
+							if (_comp(val.first, node->left->pr.first) == true)
+								return (right_rotation(node));
+							else
+							{
+								node->left = left_rotation(node->left);
+						}
+						//
+						else
+						{
+						}
+
+					}
+					// node is balanced
+				}
+
+
+					
+
+				size_t getHeight(node *node)
+				{
+					if (node == NULL)
+						return (0);
+					size_t right = getHeight(node->right);
+					size_t left = getHeight(node->left);
+
+					return ((right > left ? right : left) + 1);
+				}
+
 				node* right_rotate(node *y)
 				{
 					node	*x = y->left;
