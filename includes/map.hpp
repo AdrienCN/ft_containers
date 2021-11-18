@@ -78,8 +78,8 @@ namespace ft
 						const allocator_type& alloc = allocator_type())
 					: _root(NULL), _comp(comp), _allocator(alloc), _size(0) 
 				{
-					_preRoot = _new_node();
-					_end = _new_node();
+					_preRoot = _newNode();
+					_end = _newNode();
 
 					// begin <-- root R-->end
 					// pbm si ROOT = NULL
@@ -232,238 +232,246 @@ namespace ft
 				}
 
 
-		}
-
-	iterator insert(const iterator it, const value_type &val) 
-	{
-		return (this->insert(val).first);
-	}
-
-
-	template <class InputIterator>
-		void insert (InputIterator first, InputIterator last)
-		{
-			while (first != last)
-			{
-				this->insert(*first);
-				first++;
-			}
-		}
-
-	/*	erase
-		swap
-		*/	void clear() {}
-
-	/*	//Observer
-		key_comp
-		value_comp
+				iterator insert(const iterator it, const value_type &val) 
+				{
+					(void)it;
+					return (this->insert(val).first);
+				}
 
 
-	//Operation
-	find
-	count
-	lower_bound
-	upper_bound
-	equal_range
+				template <class InputIterator>
+					void insert (InputIterator first, InputIterator last)
+					{
+						while (first != last)
+						{
+							this->insert(*first);
+							first++;
+						}
+					}
 
-	//Allocator
+				/*	erase
+					swap
+					*/	void clear() {}
 
-
-	//autes
-	*/	void swap(const value_type & x)
-	{
-		(void)x;
-	}
-
-	private :
-
-	void	_updatePosition(void)
-	{
-		node *max_child = findMaxChild(_root);
-
-		_preRoot->right = _root;
-		_preRoot->left = _root;
-		_root->parent = _preRoot;
-
-		_end->parent = max_child;
-		max_child->right = _end;
-	}
-
-	node* _findMinChild(const node & subtree)
-	{
-		node *current = subtree;
-		while (current->left)
-			current = current->left;
-		return current;
-	}
-
-	node* _findMaxChild(const node & subtree)
-	{
-		node* current = subtree;
-		while (current->right)
-			current = current->right;
-		return current;
-	}
-
-	node* _myInsert(node *node, const value_type &val, int side)
-	{
-		typedef val.first		new_key;
-		typedef node->pr.first	node_key;
-
-		// side : 0 = root | 1 = left | 2 = right	
-		//base case one
-		if (node == NULL)
-			return (_newNode(node, val, side));
-		//base case two
-		//if (new_key == node_key)
-		//return (node);
-
-		// new_key < node_key. Insertion gauche
-		if (_comp(new_key, node_key) == true)
-			node->left = this->_myInsert(node->left, val, 1);
-		// new_key > node_key .  Insertion droite
-		else if (_comp(new_key, node_key) == false)
-			node->right = this->_myInsert(node->right, val, 2); 
-		//Key == cur_key. Deja present . Pas d'insertion
-		else
-			return (node);
-
-		//calculer la nouvelle height
-		node->height = _getHeight(node);
-
-		//balancer l'arbre apres l'insertion
-		int balance = _isBalanced(node, val);
-
-		//Tree is NOT balanced
-		//rotate for balancing and return new subroot
-		if (balance != 0)
-			return (this->_doRotation(node, balance));
-		else
-			return (node); // Subtree is balanced return unchanged subroot
-	}
-
-	node* _doRotation(node *node, int scenario)
-	{
-		//left branch is heavy
-		if (scenario < - 1)
-		{
-			//if new_key < node->left->key
-			//left left case
-			if (_comp(new_key, node->left->key) == true)
-				return (_rightRotate(node));
-			//left right case
-			else
-			{
-				node->left = _leftRotate(node->left);
-				return (_rightRotate(node));
-			}
-		}
-		//Right branch is heavy
-		else if (scenario > 1)
-		{
-			if (_comp(new_key, node->right->key) == false)
-				return (_leftRotate(node));
-			else
-			{
-				node->right = _rightRotate(node->right);
-				return (_leftRotate(node));
-			}
-		}
-		else
-		{
-			std::cout << "There is a problem in DO_ROTATION" << std::endl;
-		}
-		return (NULL);
-	}
-
-	int _isBalanced(node *node, const value_type &val)
-	{
-		return (_getHeight(node->right) - _getHeight(node->left));
-	}
+				/*	//Observer
+					key_comp
+					value_comp
 
 
-	size_t _getHeight(node *node)
-	{
-		if (node == NULL)
-			return (0);
-		size_t right = _getHeight(node->right);
-		size_t left = _getHeight(node->left);
+				//Operation
+				find
+				count
+				lower_bound
+				upper_bound
+				equal_range
 
-		return ((right > left ? right : left) + 1);
-	}
+				//Allocator
 
-	node* _rightRotate(node *y)
-	{
-		node	*x = y->left;
-		node	*x_right = x->right;
 
-		x->right = y;
-		y->left = x_right;
-		return (x);
-	}
+				//autes
+				*/	void swap(const value_type & x)
+				{
+					(void)x;
+				}
 
-	node* _leftRotate(node *y)
-	{
-		node	*x = y->right;
-		node	*x_left = x->left;
+			private :
 
-		x->left = y;
-		y->right = x_left;
-		return (x);
-	}
+				void	_updatePosition(void)
+				{
+					node *max_child = findMaxChild(_root);
 
-	//Mes fonctions utils perso
-	node*	_findKey(node* node, const value_type &val) 
-	{
-		typedef val.first		new_key;
-		typedef node->pr.first	node_key;
+					_preRoot->right = _root;
+					_preRoot->left = _root;
+					_root->parent = _preRoot;
 
-		if (node == NULL)
-			return (NULL);
+					_end->parent = max_child;
+					max_child->right = _end;
+				}
 
-		if (_comp(new_key, node_key) == true)
-			return (this->_findKey(node->left, val));
-		else if (_comp(new_key, node_key) == false)
-			return (this->_findKey(node->right, val));
-		else
-			return (node);
-	}
+				node* _findMinChild(const node *subtree)
+				{
+					node *current = subtree;
+					while (current->left)
+						current = current->left;
+					return current;
+				}
 
-	// side : 0 = root | 1 = left | 2 = right
-	node*	_newNode(node *parent, const value_type & val, int side)
-	{
-		node *new_node = _allocator_node.allocate(1);
-		_allocator.construct(new_node, node(val));
-		if (side == 0) // root case
-		{
-			//free_root (si on avait alloue un null_node a root)
-			return (new_node);
-		}
-		else
-		{
-			new_node->parent = parent;
-			if (side == 1)
-				parent->left = new_node;
-			else
-				parent->right = new_node;
-		}
-		return (new_node);
-	}
-	node*	_newNode(const value_type & val)
-	{
-		node *new_node = _allocator_node.allocate(1);
+				node* _findMaxChild(const node *subtree)
+				{
+					node* current = subtree;
+					while (current->right)
+						current = current->right;
+					return current;
+				}
 
-		_allocator_node.construct(new_node, node(val));
-		return (new node(val));
-	}
+				node* _myInsert(node *node, const value_type &val, int side)
+				{
+					key_type new_key = val._first;
+					key_type node_key = node->pr._first;
 
-	void	_freeNode(node *subtree) 
-	{
-		(void)subtree;
-	}
+					// side : 0 = root | 1 = left | 2 = right	
+					//base case one
+					if (node == NULL)
+						return (_newNode(node, val, side));
+					//base case two
+					//if (new_key == node_key)
+					//return (node);
 
-	//fin de class map
-};
-//end of ft namespace
+					// new_key < node_key. Insertion gauche
+					if (_comp(new_key, node_key) == true)
+						node->left = this->_myInsert(node->left, val, 1);
+					// new_key > node_key .  Insertion droite
+					else if (_comp(new_key, node_key) == false)
+						node->right = this->_myInsert(node->right, val, 2); 
+					//Key == cur_key. Deja present . Pas d'insertion
+					else
+						return (node);
+
+					//calculer la nouvelle height
+					node->height = _getHeight(node);
+
+					//balancer l'arbre apres l'insertion
+					int balance = _isBalanced(node);
+
+					//Tree is NOT balanced
+					//rotate for balancing and return new subroot
+					if (balance != 0)
+						return (this->_doRotation(node, val, balance));
+					else
+						return (node); // Subtree is balanced return unchanged subroot
+				}
+
+				node* _doRotation(node *node, const value_type &val, int scenario)
+				{
+					key_type new_key = val._first;
+					key_type node_key = node->pr._first;
+
+
+					//left branch is heavy
+					if (scenario < - 1)
+					{
+						//if new_key < node->left->key
+						//left left case
+						if (_comp(new_key, node->left->key) == true)
+							return (_rightRotate(node));
+						//left right case
+						else
+						{
+							node->left = _leftRotate(node->left);
+							return (_rightRotate(node));
+						}
+					}
+					//Right branch is heavy
+					else if (scenario > 1)
+					{
+						if (_comp(new_key, node->right->key) == false)
+							return (_leftRotate(node));
+						else
+						{
+							node->right = _rightRotate(node->right);
+							return (_leftRotate(node));
+						}
+					}
+					else
+					{
+						std::cout << "There is a problem in DO_ROTATION" << std::endl;
+					}
+					return (NULL);
+				}
+
+				int _isBalanced(node *node)
+				{
+					return (_getHeight(node->right) - _getHeight(node->left));
+				}
+
+
+				size_t _getHeight(node *node)
+				{
+					if (node == NULL)
+						return (0);
+					size_t right = _getHeight(node->right);
+					size_t left = _getHeight(node->left);
+
+					return ((right > left ? right : left) + 1);
+				}
+
+				node* _rightRotate(node *y)
+				{
+					node	*x = y->left;
+					node	*x_right = x->right;
+
+					x->right = y;
+					y->left = x_right;
+					return (x);
+				}
+
+				node* _leftRotate(node *y)
+				{
+					node	*x = y->right;
+					node	*x_left = x->left;
+
+					x->left = y;
+					y->right = x_left;
+					return (x);
+				}
+
+				//Mes fonctions utils perso
+				node*	_findKey(node* node, const value_type &val) 
+				{
+					key_type new_key = val._first;
+					key_type node_key = node->pr._first;
+					
+					if (node == NULL)
+						return (NULL);
+
+					if (_comp(new_key, node_key) == true)
+						return (this->_findKey(node->left, val));
+					else if (_comp(new_key, node_key) == false)
+						return (this->_findKey(node->right, val));
+					else
+						return (node);
+				}
+
+				// side : 0 = root | 1 = left | 2 = right
+				node*	_newNode(node *parent, const value_type & val, int side)
+				{
+					node *new_node = _allocator_node.allocate(1);
+					_allocator.construct(new_node, node(val));
+					if (side == 0) // root case
+					{
+						//free_root (si on avait alloue un null_node a root)
+						return (new_node);
+					}
+					else
+					{
+						new_node->parent = parent;
+						if (side == 1)
+							parent->left = new_node;
+						else
+							parent->right = new_node;
+					}
+					return (new_node);
+				}
+				node*	_newNode(const value_type & val)
+				{
+					node *new_node = _allocator_node.allocate(1);
+
+					_allocator_node.construct(new_node, node(val));
+					return (new node(val));
+				}
+				
+				node* _newNode()
+				{
+					return (NULL);
+				}
+
+				void	_freeNode(node *subtree) 
+				{
+					(void)subtree;
+				}
+
+				//fin de class map
+		};
+	//end of ft namespace
 };
 #endif
