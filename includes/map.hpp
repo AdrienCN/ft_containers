@@ -194,15 +194,20 @@ namespace ft
 				//Element Access
 				mapped_type & operator[](const key_type &k)
 				{
-					node *needle = _findKey(_root);
+					/*
+					value_type val = make_pair(k, mapped_type());
+					node *needle = _findKey(_root, val);
 					if (needle)
 						return (needle->_pr.second);
 					else
 					{
-						node *new_node = _newNode(value_type (k, mapped_type()));
 						this->insert(new_node);
 						return mapped_type();
 					}
+					*/
+					value_type val = make_pair(k, mapped_type());
+					iterator it = this->insert(val)._first;
+					return (it->pr._second);
 				}
 
 				//Modifiers
@@ -249,7 +254,13 @@ namespace ft
 						}
 					}
 
-				/*	erase
+					void	erase(iterator position)
+					{
+						erase(position->pr.first);
+					}
+
+					/*
+					size_type erase(const key_type& k)
 					swap
 					*/	void clear() {}
 
