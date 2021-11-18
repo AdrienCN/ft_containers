@@ -1,10 +1,6 @@
 #ifndef MAP_HPP
 #define MAP_HPP
 
-
-// std::cout for degub --> To remove before push
-#include <iostream> 
-
 //std::less
 #include <functional>
 
@@ -76,11 +72,11 @@ namespace ft
 						const allocator_type& alloc = allocator_type())
 					: _root(NULL), _comp(comp), _allocator(alloc), _size(0) 
 				{
+					_root = _new_node();
 					_preRoot = _new_node();
 					_end = _new_node();
 
 					// begin <-- root R-->end
-					// pbm si ROOT = NULL
 					_root->parent = _preRoot; 
 					_root->right = _end;
 
@@ -125,18 +121,18 @@ namespace ft
 					//detruit branche gauche puis droite
 					this->clear();
 					//detruire root
-					this->_freeNode(_root);
+					this->_free_node(_root);
 				}
 
 				//Iterator
 				//begin == root
 				iterator begin()
 				{
-					return (_findMinChild(_root));
+					return (_root->findMinChild(_root));
 				}
 				const_iterator begin() const
 				{
-					return (_findMinChild(_root));
+					return (_root->findMinChild(_root));
 				}
 
 				// empty right child of most right node
@@ -192,12 +188,12 @@ namespace ft
 				//Element Access
 				mapped_type & operator[](const key_type &k)
 				{
-					node *needle = _findKey(_root);
+					node *needle = _find_node_key(_root);
 					if (needle)
 						return (needle->_pr.second);
 					else
 					{
-						node *new_node = _newNode(value_type (k, mapped_type()));
+						node *new_node = create_node(value_type (k, mapped_type()));
 						this->insert(new_node);
 						return mapped_type();
 					}
@@ -206,255 +202,215 @@ namespace ft
 				//Modifiers
 				pair<iterator, bool>	insert(const value_type &val) 
 				{
-					node *needle = _findKey(val.first);
-
+					node *new_node = _find_node_by_key(val.first);
+					
 					//Noeud absent. On l'insere
-					if (needle == NULL)
+					if (new_node == NULL)
 					{	
-						//return new balanced tree ROOT
-						_root = this->myInsert(_root, val, 0);
-						this->_updatePosition(_root);
-						iterator it(_findKey(val.first));
+						//vrai code recursif d'insertion
+						new_node = this->my_insert(_root, val);
+						iterator it(new_node);
 						return (ft::make_pair<iterator, bool> (it, true));
 					}
 					//Noeud deja present
 					else
 					{
-						iterator it(needle);
+						iterator it(new_node);
 						return (ft::make_pair<iterator, bool> (it, false));
 					}
 				}
 
 
-		}
+				}
 
-	iterator insert(const iterator it, const value_type &val) 
-	{
-		return (this->insert(val).first);
-	}
+				iterator insert(const iterator it, const value_type &val) 
+				{
+					return (this->insert(val).first);
+				}
+			
 
+				template <class InputIterator>
+					void insert (InputIterator first, InputIterator last)
+					{
+						while (first != last)
+						{
+							this->insert(*first);
+							first++;
+						}
+					}
 
-	template <class InputIterator>
-		void insert (InputIterator first, InputIterator last)
-		{
-			while (first != last)
-			{
-				this->insert(*first);
-				first++;
-			}
-		}
+				/*	erase
+					swap
+					*/	void clear() {}
 
-	/*	erase
-		swap
-		*/	void clear() {}
-
-	/*	//Observer
-		key_comp
-		value_comp
-
-
-	//Operation
-	find
-	count
-	lower_bound
-	upper_bound
-	equal_range
-
-	//Allocator
+				/*	//Observer
+					key_comp
+					value_comp
 
 
-	//autes
-	*/	void swap(const value_type & x)
-	{
-		(void)x;
-	}
+				//Operation
+				find
+				count
+				lower_bound
+				upper_bound
+				equal_range
 
-	private :
-
-	void	_updatePosition(void)
-	{
-		node *max_child = findMaxChild(_root);
-
-		_preRoot->right = _root;
-		_preRoot->left = _root;
-		_root->parent = _preRoot;
-
-		_end->parent = max_child;
-		max_child->right = _end;
-	}
-
-	node* _findMinChild(const node & subtree)
-	{
-		node *current = subtree;
-		while (current->left)
-			current = current->left;
-		return current;
-	}
-
-	node* _findMaxChild(const node & subtree)
-	{
-		node* current = subtree;
-		while (current->right)
-			current = current->right;
-		return current;
-	}
-
-	node* _myInsert(node *node, const value_type &val, int side)
-	{
-		typedef val.first		new_key;
-		typedef node->pr.first	node_key;
-
-		// side : 0 = root | 1 = left | 2 = right	
-		//base case one
-		if (node == NULL)
-			return (_newNode(node, val, side));
-		//base case two
-		//if (new_key == node_key)
-		//return (node);
-
-		// new_key < node_key. Insertion gauche
-		if (_comp(new_key, node_key) == true)
-			node->left = this->_myInsert(node->left, val, 1);
-		// new_key > node_key .  Insertion droite
-		else if (_comp(new_key, node_key) == false)
-			node->right = this->_myInsert(node->right, val, 2); 
-		//Key == cur_key. Deja present . Pas d'insertion
-		else
-			return (node);
-
-		//calculer la nouvelle height
-		node->height = _getHeight(node);
-
-		//balancer l'arbre apres l'insertion
-		int balance = _isBalanced(node, val);
-
-		//Tree is NOT balanced
-		//rotate for balancing and return new subroot
-		if (balance != 0)
-			return (this->_doRotation(node, balance));
-		else
-			return (node); // Subtree is balanced return unchanged subroot
-	}
-
-	node* _doRotation(node *node, int scenario)
-	{
-		//left branch is heavy
-		if (scenario < - 1)
-		{
-			//if new_key < node->left->key
-			//left left case
-			if (_comp(new_key, node->left->key) == true)
-				return (_rightRotate(node));
-			//left right case
-			else
-			{
-				node->left = _leftRotate(node->left);
-				return (_rightRotate(node));
-			}
-		}
-		//Right branch is heavy
-		else if (scenario > 1)
-		{
-			if (_comp(new_key, node->right->key) == false)
-				return (_leftRotate(node));
-			else
-			{
-				node->right = _rightRotate(node->right);
-				return (_leftRotate(node));
-			}
-		}
-		else
-		{
-			std::cout << "There is a problem in DO_ROTATION" << std::endl;
-		}
-		return (NULL);
-	}
-
-	int _isBalanced(node *node, const value_type &val)
-	{
-		return (_getHeight(node->right) - _getHeight(node->left));
-	}
+				//Allocator
 
 
-	size_t _getHeight(node *node)
-	{
-		if (node == NULL)
-			return (0);
-		size_t right = _getHeight(node->right);
-		size_t left = _getHeight(node->left);
+				//autes
+				*/	void swap(const value_type & x)
+				{
+					(void)x;
+				}
 
-		return ((right > left ? right : left) + 1);
-	}
+			private :
+	
 
-	node* _rightRotate(node *y)
-	{
-		node	*x = y->left;
-		node	*x_right = x->right;
+				node* my_insert(node *node, const value_type &val)
+				{
+					typedef val.first		new_key;
+					typedef node->pr.first	cur_key;
+				
 
-		x->right = y;
-		y->left = x_right;
-		return (x);
-	}
+					if (node == NULL)
+						return (_newNode(val));
 
-	node* _leftRotate(node *y)
-	{
-		node	*x = y->right;
-		node	*x_left = x->left;
+					// new_key > cur_key. Insertion droite
+					if (_comp(cur_key, new_key) == true)
+						this->my_insert(node->right, val);
+					// new_key < cur_key .  Insertion gauche
+					else if (_comp(cur_key, new_key) == true)
+						this->my_insert(node->left, val);
+					//Key == cur_key. Deja present . Pas d'insertion
+					else
+						return (node);
 
-		x->left = y;
-		y->right = x_left;
-		return (x);
-	}
+					//calculer la nouvelle height
+					node->height = getHeight(node);
 
-	//Mes fonctions utils perso
-	node*	_findKey(node* node, const value_type &val) 
-	{
-		typedef val.first		new_key;
-		typedef node->pr.first	node_key;
+					//balancer l'arbre apres l'insertion
+					bool balance = is_balanced(node, val);
 
-		if (node == NULL)
-			return (NULL);
+					//Tree is balanced
+					if (balance == 0)
+						return node;
+					if (ret < - 1)
+						{
+							//if new_key < node->left->key
+							//left left case
+							if (_comp(new_key, node->left->key) == true)
+								return (right_rotation(node));
+							//left right case
+							else
+							{
+								node->left = left_rotation(node->left);
+								return (right_rotation(node));
+							}
+						}
+						//Right branch is heavy
+						else
+						{
+							if (_comp(new_key, node->right->key) == false)
+								return (left_rotation(node));
+							else
+							{
+								node->right = right_rotation(node->right);
+								return (left_rotation(node));
+							}
+						}
 
-		if (_comp(new_key, node_key) == true)
-			return (this->_findKey(node->left, val));
-		else if (_comp(new_key, node_key) == false)
-			return (this->_findKey(node->right, val));
-		else
-			return (node);
-	}
 
-	// side : 0 = root | 1 = left | 2 = right
-	node*	_newNode(node *parent, const value_type & val, int side)
-	{
-		node *new_node = new node(val);
-		if (side == 0) // root case
-		{
-			new_node->parent = _preRoot;
-			new_node->right = _end;
-			return (new_node);
-		}
-		else
-		{
-			new_node->parent = parent;
-			if (side == 1)
-				parent->left = new_node;
-			else
-				parent->right = new_node;
-		}
-		return (new_node);
-	}
-	node*	_newNode(const value_type & val)
-	{
-		(void)val;
-		return (NULL);
-	}
-	void	_freeNode(node *subtree) 
-	{
-		(void)subtree;
-	}
+				}
 
-	//fin de class map
-};
-//end of ft namespace
+				bool is_balanced(node *node, const value_type &val)
+				{
+					typedef val.first new_key;
+					typedef pr.first  key;
+			
+					int ret = getHeight(node->right) - getHeight(node->left);
+					//is balanced ok 
+					if  (ret >= -1 && ret <= 1)	
+						return (1);
+					//node is unbalanced
+					else
+					{
+						//Left branch is heavy
+						
+
+					}
+					// node is balanced
+				}
+
+
+					
+
+				size_t getHeight(node *node)
+				{
+					if (node == NULL)
+						return (0);
+					size_t right = getHeight(node->right);
+					size_t left = getHeight(node->left);
+
+					return ((right > left ? right : left) + 1);
+				}
+
+				node* right_rotate(node *y)
+				{
+					node	*x = y->left;
+					node	*x_right = x->right;
+
+					x->right = y;
+					y->left = x_right;
+					return (x);
+				}
+
+				node* left_rotate(node *y)
+				{
+					node	*x = y->right;
+					node	*x_left = x->left;
+
+					x->left = y;
+					y->right = x_left;
+					return (x);
+				}
+
+				void	balance_tree(node *node)
+				{
+					bool balance_ret = is_balance(node)
+						if (node == root && balance_ret == true)
+							return;
+					if (balance_ret == false)
+					{
+						int rot_case = find_case(node);
+						ft_do_case(rot_case, node);
+					}
+					if (node == root)
+						return;
+					balance_tree(node->parent);
+				}
+
+				//Mes fonctions utils perso
+				node*	_find_node_by_key() 
+				{
+					return (NULL);
+				}
+				node*	_newNode()
+				{
+					return (NULL);
+				}
+				node*	_newNode(const value_type & x)
+				{
+					(void)x;
+					return (NULL);
+				}
+				void	_free_node(node *subtree) 
+				{
+					(void)subtree;
+				}
+
+				//fin de class map
+		};
+	//end of ft namespace
 };
 #endif

@@ -30,23 +30,6 @@ namespace ft
 				size_t			height;
 				value_type			pr;
 
-				//Function membre
-
-				node* findMinChild(const node & subtree)
-				{
-					node *current = subtree;
-					while (current->left)
-						current = current->left;
-					return current;
-				}
-
-				node* findMaxChild(const node & subtree)
-				{
-					node* current = subtree;
-					while (current->right)
-						current = current->right;
-					return current;
-				}
 		//end of node class
 		};
 };
