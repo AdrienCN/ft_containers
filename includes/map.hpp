@@ -195,16 +195,16 @@ namespace ft
 				mapped_type & operator[](const key_type &k)
 				{
 					/*
-					value_type val = make_pair(k, mapped_type());
-					node *needle = _findKey(_root, val);
-					if (needle)
-						return (needle->_pr.second);
-					else
-					{
-						this->insert(new_node);
-						return mapped_type();
-					}
-					*/
+					   value_type val = make_pair(k, mapped_type());
+					   node *needle = _findKey(_root, val);
+					   if (needle)
+					   return (needle->_pr.second);
+					   else
+					   {
+					   this->insert(new_node);
+					   return mapped_type();
+					   }
+					   */
 					value_type val = make_pair(k, mapped_type());
 					iterator it = this->insert(val)._first;
 					return (it->pr._second);
@@ -254,16 +254,40 @@ namespace ft
 						}
 					}
 
-					void	erase(iterator position)
+				void	erase(iterator position)
+				{
+					erase(position->pr.first);
+				}
+
+				size_type erase(const key_type& k)
+				{
+					value_type val = make_par(k, mapped_type());
+					node *needle = _findKey(val);
+					if (needle)
 					{
-						erase(position->pr.first);
+						_root = this->myErase(_root, val);
+						_updatePosition();
+						_size -= 1;
+						return (1);
 					}
+					else
+						return (0);
+				}
 
-					/*
-					size_type erase(const key_type& k)
-					swap
-					*/	void clear() {}
-
+				void erase (iterator first, iterator second)
+				{
+					while (first != second)
+					{
+						erase(first);
+						first++;
+					}
+				}
+				
+				void clear() {}
+				void swap(const value_type & x)
+				{
+					(void)x;
+				}
 				/*	//Observer
 					key_comp
 					value_comp
@@ -280,10 +304,7 @@ namespace ft
 
 
 				//autes
-				*/	void swap(const value_type & x)
-				{
-					(void)x;
-				}
+			
 
 			private :
 
@@ -315,7 +336,82 @@ namespace ft
 					return current;
 				}
 
-				node* _myInsert(node *node, const value_type &val, int side)
+				node* _myErase(node *subroot, const value_type &val)
+				{
+					key_type new_key = val._first;
+					key_type subroot_key = subroot->pr._first;
+
+					if (subroot == NULL)
+						return (NULL);
+					if (_comp(new_key, subroot_key) == true)
+						subroot->left = this->_myErase(subroot->left, val);
+					else if (_comp(new_key, subroot_key) == false)
+						subroot->right = this->_myErase(subroot->right, val); 
+					else
+					{
+						node *tmp = NULL;
+						//Un fils ou aucun fils
+						if (subroot->right == NULL || subroot->left == NULL)
+						{
+							tmp = subroot;
+							//leaf case
+							if (subroot->right == NULL && subroot->left == NULL)
+								subroot = NULL;
+							else
+								subroot = subroot->right ? subroot->right : subroot->left;
+							_freeNode(tmp); // old subroot
+						}
+						//deux fils
+						else
+						{
+							node *successor = findMinChild(subroot->right);
+							subroot->pr = successor->pr;
+							//kill my child
+							subroot = this->_myErase(subroot->right, subroot->pr);
+						}
+					}
+					//Si je n'existe pas je peux pas me balancer
+					if (subroot == NULL)
+						return (subroot);
+					//calcul sa nouvelle hauteur
+					subroot->height = _getHeight(subroot);
+					int balance = _isBalanced(subroot);
+
+					if (balance != 0)
+						subroot = this->_doEraseRotation(subroot, balance);
+					return (subroot);
+				}
+
+				node* _doEraseRotation(node* node, int balance)
+				{
+					// Left Left Case
+					if (balance > 1 && _isBalanced(node->left) >= 0)
+						return rightRotate(node);
+
+					// Left Right Case
+					if (balance > 1 && _isBalanced(node->left) < 0)
+					{
+						node->left = leftRotate(node->left);
+						return rightRotate(node);
+					}
+
+					// Right Right Case
+					if (balance < -1 &&	_isBalanced(node->right) <= 0)
+						return leftRotate(node);
+
+					// Right Left Case
+					if (balance < -1 &&	_isBalanced(node->right) > 0)
+					{
+						node->right = rightRotate(node->right);
+						return leftRotate(node);
+					}
+					else
+						std::cout << "There is a problem in ERASE_DO_ROTATION" << std::endl;
+					return (NULL);
+				}
+
+
+				node* _myInsert(node *node, const value_type &val)
 				{
 					key_type new_key = val._first;
 					key_type node_key = node->pr._first;
@@ -323,17 +419,17 @@ namespace ft
 					// side : 0 = root | 1 = left | 2 = right	
 					//base case one
 					if (node == NULL)
-						return (_newNode(node, val, side));
+						return (_newNode(node, val));
 					//base case two
 					//if (new_key == node_key)
 					//return (node);
 
 					// new_key < node_key. Insertion gauche
 					if (_comp(new_key, node_key) == true)
-						node->left = this->_myInsert(node->left, val, 1);
+						node->left = this->_myInsert(node->left, val);
 					// new_key > node_key .  Insertion droite
 					else if (_comp(new_key, node_key) == false)
-						node->right = this->_myInsert(node->right, val, 2); 
+						node->right = this->_myInsert(node->right, val); 
 					//Key == cur_key. Deja present . Pas d'insertion
 					else
 						return (node);
@@ -347,23 +443,23 @@ namespace ft
 					//Tree is NOT balanced
 					//rotate for balancing and return new subroot
 					if (balance != 0)
-						return (this->_doRotation(node, val, balance));
-					else
-						return (node); // Subtree is balanced return unchanged subroot
+						node = this->_doRotation(node, val, balance);
+					return (node); // Subtree is balanced return unchanged subroot
 				}
 
 				node* _doRotation(node *node, const value_type &val, int scenario)
 				{
 					key_type new_key = val._first;
-					key_type node_key = node->pr._first;
+					key_type node_right_key = node->right->pr._first;
+					key_type node_left_key = node->left->pr._first;
 
 
 					//left branch is heavy
-					if (scenario < - 1)
+					if (scenario > 1)
 					{
 						//if new_key < node->left->key
 						//left left case
-						if (_comp(new_key, node->left->key) == true)
+						if (_comp(new_key, node_left_key) == true)
 							return (_rightRotate(node));
 						//left right case
 						else
@@ -373,9 +469,9 @@ namespace ft
 						}
 					}
 					//Right branch is heavy
-					else if (scenario > 1)
+					else if (scenario < -1)
 					{
-						if (_comp(new_key, node->right->key) == false)
+						if (_comp(new_key, node_right_key) == false)
 							return (_leftRotate(node));
 						else
 						{
@@ -384,15 +480,13 @@ namespace ft
 						}
 					}
 					else
-					{
 						std::cout << "There is a problem in DO_ROTATION" << std::endl;
-					}
 					return (NULL);
 				}
 
 				int _isBalanced(node *node)
 				{
-					return (_getHeight(node->right) - _getHeight(node->left));
+					return (_getHeight(node->left) - _getHeight(node->right));
 				}
 
 
@@ -431,7 +525,7 @@ namespace ft
 				{
 					key_type new_key = val._first;
 					key_type node_key = node->pr._first;
-					
+
 					if (node == NULL)
 						return (NULL);
 
@@ -444,25 +538,23 @@ namespace ft
 				}
 
 				// side : 0 = root | 1 = left | 2 = right
-				node*	_newNode(node *parent, const value_type & val, int side)
+				node*	_newNode(node *parent, const value_type & val)
 				{
 					node *new_node = _allocator_node.allocate(1);
 					_allocator.construct(new_node, node(val));
-					if (side == 0) // root case
+					if (parent == _root) // root case
 					{
+						new_node->parent = _preRoot; // utilite avec updatePosition?
 						//free_root (si on avait alloue un null_node a root)
 						return (new_node);
 					}
 					else
 					{
 						new_node->parent = parent;
-						if (side == 1)
-							parent->left = new_node;
-						else
-							parent->right = new_node;
 					}
 					return (new_node);
 				}
+
 				node*	_newNode(const value_type & val)
 				{
 					node *new_node = _allocator_node.allocate(1);
@@ -470,7 +562,7 @@ namespace ft
 					_allocator_node.construct(new_node, node(val));
 					return (new node(val));
 				}
-				
+
 				node* _newNode()
 				{
 					return (NULL);
@@ -480,7 +572,6 @@ namespace ft
 				{
 					(void)subtree;
 				}
-
 				//fin de class map
 		};
 	//end of ft namespace
