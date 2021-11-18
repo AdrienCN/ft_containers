@@ -339,11 +339,47 @@ namespace ft
 
 				const_iterator find (const key_type &k) const
 				{
-					return this->find(k);
+					return (this->find(k));
 				}
-				count
-				lower_bound
-				upper_bound
+				size_type count(const key_type &k) const
+				{
+					//present
+					if (*(this->find(k)) != _end)
+						return (1);
+					else
+						return (0);
+				}
+
+				iterator lower_bound(const key_type &k)
+				{
+					iterator it(_root);
+					while (_comp(it->pr.first, k) == true && *it != _end)
+						it++
+					return (*it);
+				}
+
+				const_iterator lower_bound(const key_type &k) const
+				{
+					return this->lower_bound(k);
+				}
+
+
+				iterator upper_bound(const key_type &k)
+				{
+					iterator it(_root);
+					while (_comp(it->pr.first, k) == false && *it != _end)
+						it++;
+					if (it->pr.first == k && *it != _end)
+						return (++it);
+					else
+						return (it);
+				}
+
+				const_iterator upper_bound(const key_type &k) const
+				{
+					return (this->upper_bound(k));
+				}
+
 				equal_range
 
 				//Allocator
