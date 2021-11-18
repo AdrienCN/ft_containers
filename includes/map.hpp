@@ -76,11 +76,8 @@ namespace ft
 				//Constructor
 				explicit map (const key_compare& comp = key_compare(),
 						const allocator_type& alloc = allocator_type())
-					: _root(NULL), _comp(comp), _allocator(alloc), _size(0) 
+					: _root(_newNode()),_preRoot(_newNode()), _end(_newNode()), _comp(comp), _allocator(alloc), _size(0) 
 				{
-					_preRoot = _newNode();
-					_end = _newNode();
-
 					// begin <-- root R-->end
 					// pbm si ROOT = NULL
 					_root->parent = _preRoot; 
@@ -124,21 +121,20 @@ namespace ft
 
 				virtual ~map()
 				{
-					//detruit branche gauche puis droite
+					//detruit tout sauf _begin 
 					this->clear();
-					//detruire root
-					this->_freeNode(_root);
+					_freeNode(_begin);
 				}
 
 				//Iterator
 				//begin == root
 				iterator begin()
 				{
-					return (_findMinChild(_root));
+					return (this->_findMinChild(_root));
 				}
 				const_iterator begin() const
 				{
-					return (_findMinChild(_root));
+					return (this->_findMinChild(_root));
 				}
 
 				// empty right child of most right node
@@ -196,7 +192,7 @@ namespace ft
 				{
 					/*
 					   value_type val = make_pair(k, mapped_type());
-					   node *needle = _findKey(_root, val);
+					   node *needle = _findVal(_root, val);
 					   if (needle)
 					   return (needle->_pr.second);
 					   else
@@ -214,7 +210,7 @@ namespace ft
 				pair<iterator, bool>	insert(const value_type &val) 
 				{
 					//Cherche si la key est deja presente
-					node *needle = _findKey(_root, val.first);
+					node *needle = this->_findVal(_root, val);
 
 					//Noeud absent. On l'insere
 					if (needle == NULL)
@@ -224,7 +220,7 @@ namespace ft
 						_root = this->myInsert(_root, val, 0);
 						//update les iterator de pos
 						this->_updatePosition(_root);
-						iterator it(_findKey(_root, val.first));
+						iterator it(_findVal(_root, val));
 						this->_size += 1;
 						return (ft::make_pair<iterator, bool> (it, true));
 					}
@@ -256,17 +252,17 @@ namespace ft
 
 				void	erase(iterator position)
 				{
-					erase(position->pr.first);
+					this->erase(position->pr.first);
 				}
 
 				size_type erase(const key_type& k)
 				{
 					value_type val = make_par(k, mapped_type());
-					node *needle = _findKey(val);
+					node *needle = _findVal(val);
 					if (needle)
 					{
 						_root = this->myErase(_root, val);
-						_updatePosition();
+						this->_updatePosition();
 						_size -= 1;
 						return (1);
 					}
@@ -278,23 +274,73 @@ namespace ft
 				{
 					while (first != second)
 					{
-						erase(first);
+						this->erase(first);
 						first++;
 					}
 				}
 				
-				void clear() {}
-				void swap(const value_type & x)
+
+				void swap(map & x)
 				{
-					(void)x;
+					map tmp;
+
+					tmp._root = x._root;
+					tmp._end = x._end;
+					tmp._preRoot = x._preRoot;
+					tmp._comp = x._comp;
+					tmp._allocator = x._allocator;
+					tmp._allocator_node = x._allocator_node;
+	
+					x._root = _root;
+					x._end = _end;
+					x._preRoot = _preRoot;
+					x._comp = _comp;
+					x._allocator = _allocator;
+					x._allocator_node = _allocator_node;
+					x._size = _size;
+
+					_root = tmp._root;
+					_end = tmp._end;
+					_preRoot = tmp._preRoot;
+					_comp = tmp._comp;
+					_allocator = tmp._allocator;
+					_allocator_node = tmp._allocator_node;
+					_size = tmp._size;
 				}
-				/*	//Observer
-					key_comp
-					value_comp
+				
+				void clear() 
+				{
+					this->_deletePostOrder(_root);
+					_updatePosition();
+					_size = 0;
+				}
+
+				//Observer
+				key_compare key_comp() const
+				{
+					return (_comp);
+				}
+
+				value_compare value_comp() const
+				{
+					return (value_compare(_comp));
+				}
 
 
 				//Operation
-				find
+				iterator find (const key_type &k)
+				{
+					node *needle = this->_findVal(_root, make_pair(k, mapped_type()));
+					if (needle)
+						return (needle);
+					else
+						return (_end);
+				}
+
+				const_iterator find (const key_type &k) const
+				{
+					return this->find(k);
+				}
 				count
 				lower_bound
 				upper_bound
@@ -302,15 +348,37 @@ namespace ft
 
 				//Allocator
 
-
-				//autes
-			
+				get_allocator	
 
 			private :
 
+				void	deletePostOrder(node *root)
+				{
+					if (root == _end)
+						std::cout << "clear() DELETES \"_end\"" << std::endl;
+					if (node == NULL)
+						return;
+					this->_deletePostOrder(root->left);
+					this->_deletePostOrder(root->right);
+					_freeNode(root);
+				}
+
+
 				void	_updatePosition(void)
 				{
-					node *max_child = findMaxChild(_root);
+
+					node *max_child;
+					//l'arbre est vide et/ou Root a ete supprime
+					if (_root == NULL)
+					{
+						_root = _newNode();
+						max_child = root;
+					}
+					else
+						max_child = findMaxChild(root);
+					//suite a un clear par exemple ?
+					if (_end == NULL)
+						_end = _newNode();
 
 					_preRoot->right = _root;
 					_preRoot->left = _root;
@@ -322,6 +390,8 @@ namespace ft
 
 				node* _findMinChild(const node *subtree)
 				{
+					if (subtree == NULL)
+						return (NULL);
 					node *current = subtree;
 					while (current->left)
 						current = current->left;
@@ -330,6 +400,8 @@ namespace ft
 
 				node* _findMaxChild(const node *subtree)
 				{
+					if (subtree == NULL)
+						return (NULL);
 					node* current = subtree;
 					while (current->right)
 						current = current->right;
@@ -384,22 +456,15 @@ namespace ft
 
 				node* _doEraseRotation(node* node, int balance)
 				{
-					// Left Left Case
 					if (balance > 1 && _isBalanced(node->left) >= 0)
 						return rightRotate(node);
-
-					// Left Right Case
 					if (balance > 1 && _isBalanced(node->left) < 0)
 					{
 						node->left = leftRotate(node->left);
 						return rightRotate(node);
 					}
-
-					// Right Right Case
 					if (balance < -1 &&	_isBalanced(node->right) <= 0)
 						return leftRotate(node);
-
-					// Right Left Case
 					if (balance < -1 &&	_isBalanced(node->right) > 0)
 					{
 						node->right = rightRotate(node->right);
@@ -418,7 +483,10 @@ namespace ft
 
 					// side : 0 = root | 1 = left | 2 = right	
 					//base case one
-					if (node == NULL)
+					//root case 
+					//if (root->init = false && node == _root)
+					//		return (_newNode
+					if (node == NULL) // || (_root->init == false && node == _root)
 						return (_newNode(node, val));
 					//base case two
 					//if (new_key == node_key)
@@ -452,7 +520,6 @@ namespace ft
 					key_type new_key = val._first;
 					key_type node_right_key = node->right->pr._first;
 					key_type node_left_key = node->left->pr._first;
-
 
 					//left branch is heavy
 					if (scenario > 1)
@@ -521,7 +588,7 @@ namespace ft
 				}
 
 				//Mes fonctions utils perso
-				node*	_findKey(node* node, const value_type &val) 
+				node*	_findVal(node* node, const value_type &val) 
 				{
 					key_type new_key = val._first;
 					key_type node_key = node->pr._first;
@@ -530,20 +597,23 @@ namespace ft
 						return (NULL);
 
 					if (_comp(new_key, node_key) == true)
-						return (this->_findKey(node->left, val));
+						return (this->_findVal(node->left, val));
 					else if (_comp(new_key, node_key) == false)
-						return (this->_findKey(node->right, val));
+						return (this->_findVal(node->right, val));
 					else
 						return (node);
 				}
 
-				// side : 0 = root | 1 = left | 2 = right
 				node*	_newNode(node *parent, const value_type & val)
 				{
 					node *new_node = _allocator_node.allocate(1);
 					_allocator.construct(new_node, node(val));
-					if (parent == _root) // root case
+
+					if (parent == _root) // && _root->init == false) // root case
 					{
+						//root->init = true;
+						//root->pr = val
+						//return (root)
 						new_node->parent = _preRoot; // utilite avec updatePosition?
 						//free_root (si on avait alloue un null_node a root)
 						return (new_node);
@@ -560,17 +630,24 @@ namespace ft
 					node *new_node = _allocator_node.allocate(1);
 
 					_allocator_node.construct(new_node, node(val));
-					return (new node(val));
+					return (new_node);
 				}
 
 				node* _newNode()
 				{
-					return (NULL);
+					node *new_node = _allocator_node.allocate(1);
+					_allocator_node.construct(new_node, node());
+					return (new_node);
 				}
 
 				void	_freeNode(node *subtree) 
 				{
-					(void)subtree;
+					if (subtree)
+					{
+						_node_allocator.destroy(subtree);
+						_node_allocator.deallocate(subtree, 1);
+						subtree = NULL;
+					}
 				}
 				//fin de class map
 		};
