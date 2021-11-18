@@ -18,7 +18,7 @@
 #include "node.hpp"
 namespace ft
 {
-	template <class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<pair<const Key, T> > >
+	template <class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key, T> > >
 		class map
 		{
 			public:
@@ -40,7 +40,8 @@ namespace ft
 				typedef typename ft::reverse_iterator<const_iterator>			const_reverse_iterator;
 				typedef typename ft::iterator_traits<iterator>::difference_type	difference_type;
 				typedef	std::size_t										size_type;
-				typedef node<value_type>								node;
+				typedef ft::node<value_type>								node;
+				typedef typename std::allocator<node>			allocator_type_node;
 
 				class value_compare
 				{
@@ -61,12 +62,13 @@ namespace ft
 
 			protected:
 				//Attribut
-				node*		_root; // root node
-				node*		_end; //EMPTY right child of the most right node ---->  end
-				node*		_preRoot; // PREroot node ---> rend
-				key_compare		_comp;
-				allocator_type	_allocator;
-				size_type		_size;
+				node*				_root; // root node
+				node*				_end; //EMPTY right child of the most right node ---->  end
+				node*				_preRoot; // PREroot node ---> rend
+				key_compare			_comp;
+				allocator_type		_allocator;
+				allocator_type_node	_allocator_node;
+				size_type			_size;
 
 
 			public:
@@ -206,15 +208,19 @@ namespace ft
 				//Modifiers
 				pair<iterator, bool>	insert(const value_type &val) 
 				{
-					node *needle = _findKey(val.first);
+					//Cherche si la key est deja presente
+					node *needle = _findKey(_root, val.first);
 
 					//Noeud absent. On l'insere
 					if (needle == NULL)
 					{	
+						//Insere ET balance
 						//return new balanced tree ROOT
 						_root = this->myInsert(_root, val, 0);
+						//update les iterator de pos
 						this->_updatePosition(_root);
-						iterator it(_findKey(val.first));
+						iterator it(_findKey(_root, val.first));
+						this->_size += 1;
 						return (ft::make_pair<iterator, bool> (it, true));
 					}
 					//Noeud deja present
@@ -426,11 +432,11 @@ namespace ft
 	// side : 0 = root | 1 = left | 2 = right
 	node*	_newNode(node *parent, const value_type & val, int side)
 	{
-		node *new_node = new node(val);
+		node *new_node = _allocator_node.allocate(1);
+		_allocator.construct(new_node, node(val));
 		if (side == 0) // root case
 		{
-			new_node->parent = _preRoot;
-			new_node->right = _end;
+			//free_root (si on avait alloue un null_node a root)
 			return (new_node);
 		}
 		else
@@ -445,9 +451,12 @@ namespace ft
 	}
 	node*	_newNode(const value_type & val)
 	{
-		(void)val;
-		return (NULL);
+		node *new_node = _allocator_node.allocate(1);
+
+		_allocator_node.construct(new_node, node(val));
+		return (new node(val));
 	}
+
 	void	_freeNode(node *subtree) 
 	{
 		(void)subtree;
