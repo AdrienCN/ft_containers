@@ -44,12 +44,12 @@ namespace ft
 
 			reference operator*() const
 			{
-				return (_ptr->_pr);
+				return (_ptr->pr);
 			}
 
 			pointer operator->() const
 			{
-				return (&(_ptr->_pr));
+				return (&(_ptr->pr));
 			}
 
 			iterator_map & operator++()
@@ -148,12 +148,12 @@ namespace ft
 
 			reference operator*() const
 			{
-				return (_ptr->_pr);
+				return (_ptr->pr);
 			}
 
 			pointer operator->() const
 			{
-				return (&(_ptr->_pr));
+				return (&(_ptr->pr));
 			}
 
 			const_iterator_map & operator++()
