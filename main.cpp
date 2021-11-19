@@ -48,5 +48,10 @@ int main()
 	
 	map.insert(ft::make_pair('b', 2));
 
+	ft::map<MAP> copy(map);
+	//ft::map<MAP> range(map.begin(), map.end());
+	//ft::map<MAP> assign = map;
+
+
 	return (1);
 }

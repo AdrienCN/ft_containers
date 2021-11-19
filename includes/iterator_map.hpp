@@ -105,6 +105,26 @@ namespace ft
 				--(*this);
 				return tmp;
 			}
+		private:
+		node* findMinChild(node *subtree)
+				{
+					if (subtree == NULL)
+						return (NULL);
+					node *current = subtree;
+					while (current->left)
+						current = current->left;
+					return current;
+				}
+
+				node* findMaxChild(node *subtree)
+				{
+					if (subtree == NULL)
+						return (NULL);
+					node *current = subtree;
+					while (current->right && current->right)
+						current = current->right;
+					return current;
+				}
 			//end of iterator_map
 	};
 
@@ -210,6 +230,26 @@ namespace ft
 				return tmp;
 			}
 			//end of const_iterator_map
+		private:
+		node* findMinChild(node *subtree)
+				{
+					if (subtree == NULL)
+						return (NULL);
+					node *current = subtree;
+					while (current->left)
+						current = current->left;
+					return current;
+				}
+
+				node* findMaxChild(node *subtree)
+				{
+					if (subtree == NULL)
+						return (NULL);
+					node *current = subtree;
+					while (current->right)
+						current = current->right;
+					return current;
+				}
 	};
 	//end of namespace
 };

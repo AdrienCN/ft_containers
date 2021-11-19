@@ -98,16 +98,16 @@ namespace ft
 				template <class InputIterator>
 					map (InputIterator first, InputIterator last,
 							const key_compare& comp = key_compare(),
-							const allocator_type& alloc = allocator_type()) :_root(NULL), _comp(comp), _allocator(alloc), _size(0)
+							const allocator_type& alloc = allocator_type()) :_root(_newNode()), _end(_newNode()), _preRoot(_newNode()), _comp(comp), _allocator(alloc), _size(0)
 			{
 				for (InputIterator it(first) ; it != last; it++)
-					this->insert(*it, _root);
+					this->insert(*it);
 			}
 
-				map (const map& x) : _root(NULL), _comp(x._comp), _allocator(x._allocator), _size(0)
+				map (const map& x) : _root(_newNode()), _end(_newNode()), _preRoot(_newNode()), _comp(x._comp), _allocator(x._allocator), _size(0)
 			{
-				for (iterator it = x.begin(); it != x.end(); it++)
-					this->insert(*it, _root);
+				for (const_iterator it = x.begin(); it != x.end(); it++)
+					this->insert(*it);
 			}
 
 				map & operator=(const map& x)
@@ -123,16 +123,16 @@ namespace ft
 				virtual ~map()
 				{
 					//detruit tout sauf _preRoot 
-					//this->_deletePostOrder(_root);
+					this->_deletePostOrder(_root);
 					_freeNode(_preRoot);
 				}
 
-				//Iterator
-				//begin == root
+				//Iterator most left child
 				iterator begin()
 				{
 					return (this->_findMinChild(_root));
 				}
+
 				const_iterator begin() const
 				{
 					return (this->_findMinChild(_root));
