@@ -27,8 +27,8 @@ namespace ft
 				node			*parent;
 				node			*left;
 				node			*right;
-				size_t			height;
 				value_type			pr;
+				size_t			height;
 
 		//end of node class
 		};
