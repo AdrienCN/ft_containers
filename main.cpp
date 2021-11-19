@@ -23,10 +23,30 @@ int main()
 	ft::pair<char, int> pr;
 	pr._first = 'c';
 	pr._second = '3';
-	map['a'] = 1;
 	//exit(1);
+	map.insert(ft::make_pair('a', 6));
+	
+	std::cout << "\t------" << std::endl;
+	
+	map.insert(ft::make_pair('d', 4));
+	
+	
+	std::cout << "\t------" << std::endl;
+	
+	
+	map.insert(pr);
+	
+	
+	std::cout << "\t------" << std::endl;
+	
+	
+	map.insert(ft::make_pair('e', 6));
+	
+	
+	std::cout << "\t------" << std::endl;
+	
+	
 	map.insert(ft::make_pair('b', 2));
-	//map.insert(pr);
 
 	return (1);
 }

@@ -210,13 +210,14 @@ namespace ft
 				//Modifiers
 				pair<iterator, bool>	insert(const value_type &val) 
 				{
+					std::cout << "insert : " << val._first << std::endl;
 					//Cherche si la key est deja presente
 					node *needle = this->_findVal(_root, val);
-					std::cout << "insert : " << val._first << std::endl;
 
 					//Noeud absent. On l'insere
 					if (needle == NULL)
 					{	
+						std::cout << "insert : needle == NULL " << std::endl;
 						//Insere ET balance
 						//return new balanced tree ROOT
 						
@@ -234,6 +235,7 @@ namespace ft
 					//Noeud deja present
 					else
 					{
+						std::cout << "insert : needle == exist " << std::endl;
 						iterator it(needle);
 						return (ft::make_pair<iterator, bool> (it, false));
 					}
@@ -437,7 +439,7 @@ namespace ft
 
 				void	_updatePosition(void)
 				{
-
+					std::cout << "Update postion : START" << std::endl;
 					node *max_child;
 					//l'arbre est vide et/ou Root a ete supprime
 					if (_root == NULL)
@@ -458,6 +460,7 @@ namespace ft
 
 					_end->parent = max_child;
 					max_child->right = _end;
+					std::cout << "Update postion : END " << std::endl;
 				}
 
 				node* _findMinChild(node *subtree)
@@ -475,8 +478,9 @@ namespace ft
 					if (subtree == NULL)
 						return (NULL);
 					node *current = subtree;
-					while (current->right)
+					while (current->right && current->right != _end)
 						current = current->right;
+					std::cout << "MaxChild = Node(" << current->pr._first << ")" << std::endl;
 					return current;
 				}
 
@@ -558,7 +562,7 @@ namespace ft
 					//root case 
 					//if (root->init = false && node == _root)
 					//		return (_newNode
-					if (node == NULL) // || (_root->init == false && node == _root)
+					if (node == NULL || node == _end) // || (_root->init == false && node == _root)
 						return (_newNode(node, val));
 					//base case two
 					//if (new_key == node_key)
@@ -581,17 +585,21 @@ namespace ft
 
 					//balancer l'arbre apres l'insertion
 					int balance = _isBalanced(node);
+						std::cout << "Node ("<< node->pr._first<< ") height = " << node->height  << " |  balance =  " <<  balance << std::endl;
 
 					//Tree is NOT balanced
 					//rotate for balancing and return new subroot
 					if (balance < -1 || balance > 1)
+					{
 						node = this->_doRotation(node, val, balance);
+						std::cout << "Rotation : END" << std::endl;
+					}
 					return (node); // Subtree is balanced return unchanged subroot
 				}
 
 				node* _doRotation(node *node, const value_type &val, int scenario)
 				{
-						std::cout << "DO_ROTATION : " <<  scenario << " : " << std::endl;
+					std::cout << "_doRotation : ";
 					if (node == NULL)
 					{
 						std::cout << "There is a problem at the START OF  DO_ROTATION" << std::endl;
@@ -602,14 +610,19 @@ namespace ft
 					//left branch is heavy
 					if (scenario > 1)
 					{
+						std::cout << "Left Heavy : ";
 						key_type node_left_key = node->left->pr._first;
 						//if new_key < node->left->key
 						//left left case
 						if (_comp(new_key, node_left_key) == true)
+						{
+							std::cout << "LL case" << std::endl;
 							return (_rightRotate(node));
+						}
 						//left right case
 						else
 						{
+							std::cout << "LR case" << std::endl;
 							node->left = _leftRotate(node->left);
 							return (_rightRotate(node));
 						}
@@ -617,11 +630,16 @@ namespace ft
 					//Right branch is heavy
 					else if (scenario < -1)
 					{
+						std::cout << "Right Heavy : ";
 						key_type node_right_key = node->right->pr._first;
 						if (_comp(new_key, node_right_key) == false)
+						{
+							std::cout << "RR case" << std::endl;
 							return (_leftRotate(node));
+						}
 						else
 						{
+							std::cout << "RL case" << std::endl;
 							node->right = _rightRotate(node->right);
 							return (_leftRotate(node));
 						}
@@ -641,7 +659,7 @@ namespace ft
 
 				size_t _getHeight(node *node)
 				{
-					if (node == NULL)
+					if (node == NULL || node == _end)
 						return (0);
 					size_t right = _getHeight(node->right);
 					size_t left = _getHeight(node->left);
@@ -672,8 +690,14 @@ namespace ft
 				//Mes fonctions utils perso
 				node*	_findVal(node* node, const value_type &val) 
 				{
-					if (node == NULL)
+					if (node == NULL || node == _end)
+					{
+						if (node == NULL)
+							std::cout << "_findVal : Node = NULL" << std::endl;
+						else
+							std::cout << "_findVal : Node = _end" << std::endl;
 						return (NULL);
+					}
 					key_type new_key = val._first;
 					key_type node_key = node->pr._first;
 					
