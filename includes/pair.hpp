@@ -10,19 +10,19 @@ namespace ft
 				typedef T1	first_type;
 				typedef T2	second_type;
 
-				first_type _first;
-				second_type _second;
+				first_type first;
+				second_type second;
 
-				pair() : _first(), _second() {}
+				pair() : first(), second() {}
 				template<typename U, typename V>
-					pair (const pair<U,V> &pr) : _first(pr._first), _second(pr._second) {}
-				pair (const first_type &a, const second_type & b) : _first(a), _second(b) {}
+					pair (const pair<U,V> &pr) : first(pr.first), second(pr.second) {}
+				pair (const first_type &a, const second_type & b) : first(a), second(b) {}
 				pair & operator=(const pair& pr)
 				{
 					if (pr == *this)
 						return (*this);
-					_first = pr._first;
-					_second = pr._second;
+					first = pr.first;
+					second = pr.second;
 					return (*this);
 				}
 				~pair() {}
@@ -31,7 +31,7 @@ namespace ft
     template <typename T1, typename T2>
     bool operator==(const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
     {
-        return ((lhs._first == rhs._first) && (lhs._second == rhs._second));
+        return ((lhs.first == rhs.first) && (lhs.second == rhs.second));
     }
 
     template <typename T1, typename T2>
@@ -43,7 +43,7 @@ namespace ft
     template <typename T1, typename T2>
     bool operator<(const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
     {
-        return ((lhs._first < rhs._first) || (!(rhs._first < lhs._first) && lhs._second < rhs._second));
+        return ((lhs.first < rhs.first) || (!(rhs.first < lhs.first) && lhs.second < rhs.second));
     }
     
     template <typename T1, typename T2>

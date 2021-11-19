@@ -21,8 +21,8 @@ int main()
 {
 	ft::map<MAP> map;
 	ft::pair<char, int> pr;
-	pr._first = 'c';
-	pr._second = '3';
+	pr.first = 'c';
+	pr.second = '3';
 	//exit(1);
 	map.insert(ft::make_pair('a', 6));
 	
@@ -47,11 +47,24 @@ int main()
 	
 	
 	map.insert(ft::make_pair('b', 2));
+	
+	std::cout << "\t------" << std::endl;
+	std::cout << "\t------" << std::endl;
+	std::cout << "\t------" << std::endl;
+	std::cout << "\t------" << std::endl;
+	
+	if (map.empty())
+		std::cout << "empty" << std::endl;
+	else
+		std::cout << "full" << std::endl;
+	std::cout << std::endl;
+	std::cout << std::endl;
 
 	ft::map<MAP> copy(map);
-	//ft::map<MAP> range(map.begin(), map.end());
-	//ft::map<MAP> assign = map;
+//	ft::map<MAP> range(map.begin(), map.end());
+//	ft::map<MAP> assign = map;
 
+	
 
 	return (1);
 }

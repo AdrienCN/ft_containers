@@ -1,11 +1,15 @@
 #ifndef ITERATOR_MAP
 #define ITERATOR_MAP
 #include  "node.hpp"
+#include  "iterator.hpp"
 
 namespace ft
 {
+	template<typename T>
+	class const_iterator_map;
+
 	template <typename T>
-		class iterator_map : public ft::iterator<ft::bidirectional_tag, T>
+	class iterator_map : public ft::iterator<ft::bidirectional_tag, T>
 	{
 		public:
 			typedef std::ptrdiff_t			difference_type;
@@ -32,14 +36,14 @@ namespace ft
 
 			virtual ~iterator_map() {};
 
-			bool operator==(const iterator_map & rhs)
+			bool operator==(const const_iterator_map<T> & rhs) const
 			{
-				return (_ptr == rhs);
+				return (_ptr == rhs._ptr);
 			}
 
-			bool operator!=(const iterator_map & rhs)
+			bool operator!=(const const_iterator_map<T> & rhs) const
 			{
-				return (_ptr != rhs);
+				return (_ptr != rhs._ptr);
 			}
 
 			reference operator*() const
@@ -140,12 +144,12 @@ namespace ft
 			typedef node<T>					node;
 
 			//Attribut
-			node		*_ptr;
+			node*	_ptr;
 			//Constructors
 			const_iterator_map () : _ptr(NULL) {};
 			const_iterator_map (node *ptr) : _ptr(ptr) {};
 			const_iterator_map (const const_iterator_map &src) : _ptr(src._ptr) {};
-		//	const_iterator_map (const const_iterator_map<T> &src) : _ptr(src._ptr) {};
+			const_iterator_map (const iterator_map<T> &src) : _ptr(src._ptr) {};
 			const_iterator_map & operator=(const const_iterator_map & src)
 			{
 				if (*this == src)
@@ -156,14 +160,14 @@ namespace ft
 
 			virtual ~const_iterator_map() {};
 
-			bool operator==(const const_iterator_map & rhs)
+			bool operator==(const const_iterator_map & rhs) const
 			{
-				return (_ptr == rhs);
+				return (_ptr == rhs._ptr);
 			}
 
-			bool operator!=(const const_iterator_map & rhs)
+			bool operator!=(const const_iterator_map & rhs) const
 			{
-				return (_ptr != rhs);
+				return (_ptr != rhs._ptr);
 			}
 
 			reference operator*() const
