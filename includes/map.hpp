@@ -4,7 +4,9 @@
 
 // std::cout for degub --> To remove before push
 #include <iostream> 
-
+#define GREEN "\033[0;32m" 
+#define RED "\033[0;31m" 
+#define RESET "\033[0;00m" 
 //std::less
 #include <functional>
 
@@ -100,14 +102,46 @@ namespace ft
 							const key_compare& comp = key_compare(),
 							const allocator_type& alloc = allocator_type()) :_root(_newNode()), _end(_newNode()), _preRoot(_newNode()), _comp(comp), _allocator(alloc), _size(0)
 			{
+				_root->parent = _preRoot; 
+				_root->right = _end;
+				_root->is_root = true;
+
+				//begin L--> root | R -->root
+				_preRoot->left = _root;
+				_preRoot->right = _root;
+				_preRoot->parent = NULL;
+
+				// root <-- end
+				_end->parent = _root;
+				_end->right = NULL;
+				_end->left = NULL;
+
 				for (InputIterator it(first) ; it != last; it++)
 					this->insert(*it);
 			}
 
 				map (const map& x) : _root(_newNode()), _end(_newNode()), _preRoot(_newNode()), _comp(x._comp), _allocator(x._allocator), _size(0)
 			{
+				_root->parent = _preRoot; 
+				_root->right = _end;
+				_root->is_root = true;
+
+				//begin L--> root | R -->root
+				_preRoot->left = _root;
+				_preRoot->right = _root;
+				_preRoot->parent = NULL;
+
+				// root <-- end
+				_end->parent = _root;
+				_end->right = NULL;
+				_end->left = NULL;
+
 				for (const_iterator it = x.begin(); it != x.end(); it++)
+				{
+					std::cout << "test" << std::endl;
+					std::cout << "- @) Copying key [" << it->first << "]" << std::endl;
 					this->insert(*it);
+				}
 			}
 
 				map & operator=(const map& x)
@@ -208,7 +242,7 @@ namespace ft
 				//Modifiers
 				pair<iterator, bool>	insert(const value_type &val) 
 				{
-					std::cout << "insert : " << val.first << std::endl;
+					std::cout << "\t****insert : " << val.first << " ****" << std::endl;
 					//Cherche si la key est deja presente
 					node *needle = this->_findVal(_root, val);
 
@@ -223,11 +257,16 @@ namespace ft
 						if (_root->is_init == false && _root->left == NULL && (_root->right == NULL || _root->right == _end))
 							_root = _initTree(_root, val);
 						else
-							_root = this->_myInsert(_root, val);
+							_root = this->_myInsert(_root, _root, val);
+						std::cout << RED << "New ROOT = " << _root->pr.first << RESET <<  std::endl;
 						//update les iterator de pos
 						this->_updatePosition();
+						this->_printInorder(_root);
+						this->_printTest(_root);
 						this->_size += 1;
 						iterator it(_findVal(_root, val));
+					
+						std::cout << "\t****insert end ****\n"  << std::endl;
 						return (ft::make_pair<iterator, bool> (it, true));
 					}
 					//Noeud deja present
@@ -552,52 +591,54 @@ namespace ft
 				}
 
 
-				node* _myInsert(node *node, const value_type &val)
+				node* _myInsert(node *subroot, node *parent, const value_type &val)
 				{
 					
 					// side : 0 = root | 1 = left | 2 = right	
 					//base case one
 					//root case 
-					//if (root->init = false && node == _root)
+					//if (root->init = false && subroot == _root)
 					//		return (_newNode
-					if (node == NULL || node == _end) // || (_root->init == false && node == _root)
-						return (_newNode(node, val));
+					if (subroot == NULL || subroot == _end) // || (_root->init == false && subroot == _root)
+						return (_newNode(parent, val));
 					//base case two
-					//if (new_key == node_key)
-					//return (node);
+					//if (new_key == subroot_key)
+					//return (subroot);
 					key_type new_key = val.first;
-					key_type node_key = node->pr.first;
-
-					// new_key < node_key. Insertion gauche
-					if (_comp(new_key, node_key) == true)
-						node->left = this->_myInsert(node->left, val);
-					// new_key > node_key .  Insertion droite
-					else if (_comp(new_key, node_key) == false)
-						node->right = this->_myInsert(node->right, val); 
+					key_type subroot_key = subroot->pr.first;
+					parent = subroot;
+					// new_key < subroot_key. Insertion gauche
+					if (_comp(new_key, subroot_key) == true)
+						subroot->left = this->_myInsert(subroot->left, parent, val);
+					// new_key > subroot_key .  Insertion droite
+					else if (_comp(new_key, subroot_key) == false)
+						subroot->right = this->_myInsert(subroot->right, parent, val); 
 					//Key == cur_key. Deja present . Pas d'insertion
 					else
-						return (node);
+						return (subroot);
 
 					//calculer la nouvelle height
-					node->height = _getHeight(node);
+					subroot->height = _getHeight(subroot);
 
 					//balancer l'arbre apres l'insertion
-					int balance = _isBalanced(node);
-						std::cout << "Node ("<< node->pr.first<< ") height = " << node->height  << " |  balance =  " <<  balance << std::endl;
+					int balance = _isBalanced(subroot);
+						//std::cout << "Node ("<< subroot->pr.first<< ") height = " << subroot->height  << " |  balance =  " <<  balance << std::endl;
 
 					//Tree is NOT balanced
 					//rotate for balancing and return new subroot
 					if (balance < -1 || balance > 1)
 					{
-						node = this->_doRotation(node, val, balance);
-						std::cout << "Rotation : END" << std::endl;
+						std::cout << RED << "_doRotation : node (" << subroot->pr.first <<") : " ;
+						//subroot = this->_doRotation(subroot, val, balance);
+						subroot = this->_doRotation(subroot, val, balance);
+						std::cout << "Rotation : END" <<  RESET << std::endl;
 					}
-					return (node); // Subtree is balanced return unchanged subroot
+					std::cout << GREEN << "LEVEL Node [" << subroot->pr.first << "] | My parent is (" << subroot->parent->pr.first << ")" << RESET << std::endl;
+					return (subroot); // Subtree is balanced return unchanged subroot
 				}
 
 				node* _doRotation(node *node, const value_type &val, int scenario)
 				{
-					std::cout << "_doRotation : ";
 					if (node == NULL)
 					{
 						std::cout << "There is a problem at the START OF  DO_ROTATION" << std::endl;
@@ -668,20 +709,34 @@ namespace ft
 				node* _rightRotate(node *y)
 				{
 					node	*x = y->left;
-					node	*x_right = x->right;
-
+					node	*z = x->right;
+/*
+					node	*tmp = x->parent;
+					x->parent = y->parent;
+					y->parent = tmp->parent;
+*/				
+					x->parent = y->parent;
+					y->parent = x;
 					x->right = y;
-					y->left = x_right;
+					y->left = z;
 					return (x);
 				}
 
 				node* _leftRotate(node *y)
 				{
+					//e = y->parent
+					//y = b
+					//x = d
 					node	*x = y->right;
-					node	*x_left = x->left;
+					node	*z = x->left;
+					
+					x->parent = y->parent;
 
 					x->left = y;
-					y->right = x_left;
+					y->parent = x;
+
+
+					y->right = z;
 					return (x);
 				}
 
@@ -713,7 +768,7 @@ namespace ft
 				node* _initTree(node *root, const value_type &val)
 				{
 
-					std::cout << "_iniTree : Inserting _root value : " << val.first << std::endl;
+					std::cout << "ROOOOOOOT_ROOOOOOOT : _iniTree : Inserting _root value : " << val.first << " ROOOOOOOOOOT_ROOOOOOOOOOT" << std::endl;
 					node *new_node = _allocator_node.allocate(1);
 					_allocator_node.construct(new_node, node(val));
 					
@@ -731,6 +786,8 @@ namespace ft
 					node *new_node = _allocator_node.allocate(1);
 					_allocator_node.construct(new_node, node(val));
 					new_node->parent = parent;
+
+					std::cout << GREEN << "My name is Node [" << new_node->pr.first << "] | My parent is (" << new_node->parent->pr.first << ")" << RESET << std::endl;
 					return (new_node);
 				}
 
@@ -756,6 +813,43 @@ namespace ft
 						_allocator_node.destroy(subtree);
 						_allocator_node.deallocate(subtree, 1);
 					}
+				}
+				void	_printInorder(node *root)
+				{
+					if (root == NULL)
+						return;
+					if (root == _end)
+					{
+						std::cout << " _end reached " << std::endl;
+						return;
+					}
+					if (root->left)
+						_printInorder(root->left);
+					std::cout << " |"<< root->pr.first << "| ";
+					if (root->right)
+						_printInorder(root->right);
+				}
+				
+				void	_printTest(node *root)
+				{
+					if (root == NULL)
+					{
+						std::cout << " NULL\n";
+						return;
+					}
+					if (root == _end)
+						std::cout << "(END)" << std::endl;
+				//	if (root == _root && root->is_init)
+					std::cout << "Node (" << root->pr.first << ")" << std::endl;
+					if (root->left)
+						std::cout << "-Left (" << root->left->pr.first << ")" << std::endl;
+					if(root->right && root->right != _end)
+						std::cout << "-Right (" << root->right->pr.first << ")" << std::endl;
+					//std::cout << "left branch : ";
+					_printTest(root->left);
+					//std::cout << "right branch : ";
+					_printTest(root->right);
+					return;
 				}
 				//fin de class map
 		};
