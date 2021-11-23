@@ -9,6 +9,7 @@
 #include "map.hpp"
 #include <vector>
 #include <stdlib.h>
+#include <string>
 
 
 #include <iostream>
@@ -20,8 +21,9 @@
 
 int main()
 {
-	ft::map<MAP> map;
-
+	//ft::map<MAP> map;
+	ft::map<char, std::string> map;
+/*
 	char c = 'a';
 	for (int i  = 5; i > 0; i--)
 	{	
@@ -32,6 +34,8 @@ int main()
 	ft::map<MAP> range(map.begin(), map.end());
 	ft::map<MAP> copy(map);
 	ft::map<MAP> assign = map;
+*/
+	map['a'] = "coucou";
 
 
 	/*

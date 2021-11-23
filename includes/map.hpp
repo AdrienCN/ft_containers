@@ -121,18 +121,18 @@ namespace ft
 				_end->left = NULL;
 				_end->is_end = true;
 				//std::cout << "Before : _end - 1  = " << (--this->end())->first << "_begin = " << this->begin()->first <<  std::endl;
-				std::cout << RED << "Range Construction start" << std::endl;
+				/*std::cout << RED << "Range Construction start" << std::endl;
 				std::cout << "iterator last = " << last->first << std::endl;
 				std::cout << "\t//////" << std::endl;
-				while (first != last)
+			*/	while (first != last)
 				{
-					std::cout << "first = " << first->first << std::endl;
+			//		std::cout << "first = " << first->first << std::endl;
 					this->insert(*first);
 					first++;
-					this->_printNode(this->end());
+					//this->_printNode(this->end());
 				}
-				this->_printNode(this->end());
-				std::cout << "Range Construction end " << RESET << std::endl;
+				//this->_printNode(this->end());
+			//	std::cout << "Range Construction end " << RESET << std::endl;
 				//std::cout << "After : _end - 1  = " << (--this->end())->first << "_begin = " << this->begin()->first <<  std::endl;
 
 			}
@@ -156,8 +156,8 @@ namespace ft
 
 				for (const_iterator it = x.begin(); it != x.end(); it++)
 				{
-					std::cout << "test" << std::endl;
-					std::cout << "- @) Copying key [" << it->first << "]" << std::endl;
+				//	std::cout << "test" << std::endl;
+				//	std::cout << "- @) Copying key [" << it->first << "]" << std::endl;
 					this->insert(*it);
 				}
 			}
@@ -203,23 +203,23 @@ namespace ft
 				}
 
 				//end()-->parent ou  
-				iterator rbegin()
+				reverse_iterator rbegin()
 				{
-					return (this->end()); //selon moi ajouter - 1);
+					return (reverse_iterator(this->end())); //selon moi ajouter - 1) ? ;
 				}
-				const_iterator rbegin() const
+				const_reverse_iterator rbegin() const
 				{
-					return (this->end()); // selon moi ajouter - 1);
+					return (const_reverse_iterator(this->end())); // selon moi ajouter - 1)?;
 				}
 				//rend() == Preroot
-				iterator rend()
+				reverse_iterator rend()
 				{
-					return (this->_preRoot);
+					return (reverse_iterator(this->begin()));
 				}
 
-				const_iterator rend() const
+				const_reverse_iterator rend() const
 				{
-					return (this->_preRoot);
+					return (const_reverse_iterator(this->begin()));
 				}
 
 				//Capacity
@@ -267,7 +267,7 @@ namespace ft
 					//Noeud absent. On l'insere
 					if (needle == NULL)
 					{	
-						std::cout << "insert : needle == NULL (" << val.first <<") " << std::endl;
+					//	std::cout << "insert : needle == NULL (" << val.first <<") " << std::endl;
 						//Insere ET balance
 						//return new balanced tree ROOT
 
@@ -276,21 +276,21 @@ namespace ft
 							_root = _initTree(_root, val);
 						else
 							_root = this->_myInsert(_root, _root, val);
-						std::cout << RED << "New ROOT = " << _root->pr.first << RESET <<  std::endl;
+				//		std::cout << RED << "New ROOT = " << _root->pr.first << RESET <<  std::endl;
 						//update les iterator de pos
 						this->_updatePosition();
-						this->_printInorder(_root);
-						this->_printTest(_root);
+					//	this->_printInorder(_root);
+					//	this->_printTest(_root);
 						this->_size += 1;
 						iterator it(_findVal(_root, val));
 
-						std::cout << "\t****insert terminated ****\n"  << std::endl;
+//						std::cout << "\t****insert terminated ****\n"  << std::endl;
 						return (ft::make_pair<iterator, bool> (it, true));
 					}
 					else
 					{
 						iterator it(needle);
-						std::cout << "insert : needle == exist " << std::endl;
+//						std::cout << "insert : needle == exist " << std::endl;
 						return (ft::make_pair<iterator, bool> (it, false));
 					}
 				}
@@ -345,14 +345,16 @@ namespace ft
 
 				void swap(map & x)
 				{
-					map tmp;
 
-					tmp._root = x._root;
-					tmp._end = x._end;
-					tmp._preRoot = x._preRoot;
-					tmp._comp = x._comp;
-					tmp._allocator = x._allocator;
-					tmp._allocator_node = x._allocator_node;
+//					std::cout << GREEN << "SWAPING" << std::endl;
+
+					node				*tmp_root = x._root;
+					node				*tmp_end = x._end;
+					node				*tmp_preRoot = x._preRoot;
+					key_compare			tmp_comp = x._comp;
+					allocator_type		tmp_allocator = x._allocator;
+					allocator_type_node	tmp_allocator_node = x._allocator_node;
+					size_type			tmp_size = x._size;
 
 					x._root = _root;
 					x._end = _end;
@@ -362,13 +364,14 @@ namespace ft
 					x._allocator_node = _allocator_node;
 					x._size = _size;
 
-					_root = tmp._root;
-					_end = tmp._end;
-					_preRoot = tmp._preRoot;
-					_comp = tmp._comp;
-					_allocator = tmp._allocator;
-					_allocator_node = tmp._allocator_node;
-					_size = tmp._size;
+					_root = tmp_root;
+					_end = tmp_end;
+					_preRoot = tmp_preRoot;
+					_comp = tmp_comp;
+					_allocator = tmp_allocator;
+					_allocator_node = tmp_allocator_node;
+					_size = tmp_size;
+//					std::cout  << "SWAP_END " <<  RESET << std::endl;
 				}
 
 				void clear() 
@@ -511,7 +514,7 @@ namespace ft
 						std::cout << "(" << node.parent->pr.first << ")  " ;
 					else
 						std::cout << "(NULL)  " ;
-				
+
 					if (node.pr == _end->pr)
 						std::cout << " <--- Node = (END)" << std::endl;
 					else	
@@ -535,11 +538,11 @@ namespace ft
 
 				void	_deletePostOrder(node *root)
 				{
-					if (root == _root)
+/*					if (root == _root)
 						std::cout << "clear() DELETES \"_root\"" << std::endl;
 					if (root == _end)
 						std::cout << "clear() DELETES \"_end\"" << std::endl;
-					if (root == NULL)
+*/					if (root == NULL)
 						return;
 					this->_deletePostOrder(root->left);
 					this->_deletePostOrder(root->right);
@@ -549,7 +552,7 @@ namespace ft
 
 				void	_updatePosition(void)
 				{
-					std::cout << "Update postion : START" << std::endl;
+//					std::cout << "Update postion : START" << std::endl;
 					node *max_child;
 					//l'arbre est vide et/ou Root a ete supprime
 					if (_root == NULL)
@@ -571,7 +574,7 @@ namespace ft
 					_end->parent = max_child;
 					_end->is_end = true;
 					max_child->right = _end;
-					std::cout << "Update postion : END " << std::endl;
+//					std::cout << "Update postion : END " << std::endl;
 				}
 
 				node* _findMinChild(node *subtree) const
@@ -591,7 +594,7 @@ namespace ft
 					node *current = subtree;
 					while (current->right && current->right != _end)
 						current = current->right;
-					std::cout << "MaxChild = Node(" << current->pr.first << ")" << std::endl;
+//					std::cout << "MaxChild = Node(" << current->pr.first << ")" << std::endl;
 					return current;
 				}
 
@@ -649,7 +652,7 @@ namespace ft
 							}
 							//Etapte 3 kill subroot
 							_freeNode(subroot);
-							
+
 							//Etape 4 fait pointer subroot sur le remplacant
 							subroot = tmp;
 
@@ -664,7 +667,7 @@ namespace ft
 					subroot->height = _getHeight(subroot);
 					int balance = _isBalanced(subroot);
 
-					if (balance != 0)
+					if (balance < -1 || balance > 1)
 						subroot = this->_doEraseRotation(subroot, balance);
 					return (subroot);
 				}
@@ -728,12 +731,12 @@ namespace ft
 					//rotate for balancing and return new subroot
 					if (balance < -1 || balance > 1)
 					{
-						std::cout << RED << "_doRotation : node (" << subroot->pr.first <<") : " ;
+				//		std::cout << RED << "_doRotation : node (" << subroot->pr.first <<") : " ;
 						//subroot = this->_doRotation(subroot, val, balance);
 						subroot = this->_doRotation(subroot, val, balance);
-						std::cout << "Rotation : END" <<  RESET << std::endl;
+				//		std::cout << "Rotation : END" <<  RESET << std::endl;
 					}
-					std::cout << GREEN << "LEVEL Node [" << subroot->pr.first << "] | My parent is (" << subroot->parent->pr.first << ")" << RESET << std::endl;
+				//	std::cout << GREEN << "LEVEL Node [" << subroot->pr.first << "] | My parent is (" << subroot->parent->pr.first << ")" << RESET << std::endl;
 					return (subroot); // Subtree is balanced return unchanged subroot
 				}
 
@@ -749,19 +752,19 @@ namespace ft
 					//left branch is heavy
 					if (scenario > 1)
 					{
-						std::cout << "Left Heavy : ";
+				//		std::cout << "Left Heavy : ";
 						key_type node_left_key = node->left->pr.first;
 						//if new_key < node->left->key
 						//left left case
 						if (_comp(new_key, node_left_key) == true)
 						{
-							std::cout << "LL case" << std::endl;
+				//			std::cout << "LL case" << std::endl;
 							return (_rightRotate(node));
 						}
 						//left right case
 						else
 						{
-							std::cout << "LR case" << std::endl;
+				//			std::cout << "LR case" << std::endl;
 							node->left = _leftRotate(node->left);
 							return (_rightRotate(node));
 						}
@@ -769,23 +772,23 @@ namespace ft
 					//Right branch is heavy
 					else if (scenario < -1)
 					{
-						std::cout << "Right Heavy : ";
+				//		std::cout << "Right Heavy : ";
 						key_type node_right_key = node->right->pr.first;
 						if (_comp(new_key, node_right_key) == false)
 						{
-							std::cout << "RR case" << std::endl;
+				//			std::cout << "RR case" << std::endl;
 							return (_leftRotate(node));
 						}
 						else
 						{
-							std::cout << "RL case" << std::endl;
+				//			std::cout << "RL case" << std::endl;
 							node->right = _rightRotate(node->right);
 							return (_leftRotate(node));
 						}
 					}
 					else
 					{
-						std::cout << "There is a problem at the END OF  DO_ROTATION scenario = " << scenario << std::endl;
+				//		std::cout << "There is a problem at the END OF  DO_ROTATION scenario = " << scenario << std::endl;
 					}
 					return (NULL);
 				}
@@ -847,10 +850,10 @@ namespace ft
 				{
 					if (node == NULL || node == _end)
 					{
-						if (node == NULL)
-							std::cout << "_findVal : Node = NULL" << std::endl;
-						else
-							std::cout << "_findVal : Node = _end" << std::endl;
+				//		if (node == NULL)
+				//			std::cout << "_findVal : Node = NULL" << std::endl;
+				//		else
+				//			std::cout << "_findVal : Node = _end" << std::endl;
 						return (NULL);
 					}
 					key_type new_key = val.first;
@@ -858,7 +861,7 @@ namespace ft
 
 					if (node_key == new_key)
 					{
-					//	std::cout << "_findVal : Node found!" << std::endl;
+						//	std::cout << "_findVal : Node found!" << std::endl;
 						return (node);
 					}
 					else if (_comp(new_key, node_key) == true)
@@ -870,7 +873,7 @@ namespace ft
 				node* _initTree(node *root, const value_type &val)
 				{
 
-					std::cout << "ROOOOOOOT_ROOOOOOOT : _iniTree : Inserting _root value : " << val.first << " ROOOOOOOOOOT_ROOOOOOOOOOT" << std::endl;
+				//	std::cout << "ROOOOOOOT_ROOOOOOOT : _iniTree : Inserting _root value : " << val.first << " ROOOOOOOOOOT_ROOOOOOOOOOT" << std::endl;
 					node *new_node = _allocator_node.allocate(1);
 					_allocator_node.construct(new_node, node(val));
 
@@ -889,7 +892,7 @@ namespace ft
 					_allocator_node.construct(new_node, node(val));
 					new_node->parent = parent;
 
-					std::cout << GREEN << "My name is Node [" << new_node->pr.first << "] | My parent is (" << new_node->parent->pr.first << ")" << RESET << std::endl;
+				//	std::cout << GREEN << "My name is Node [" << new_node->pr.first << "] | My parent is (" << new_node->parent->pr.first << ")" << RESET << std::endl;
 					return (new_node);
 				}
 
@@ -964,8 +967,55 @@ namespace ft
 
 
 
-					//fin de class map
-				};
-				//end of ft namespace
+				//fin de class map
 		};
+	template< class Key, class T, class Compare, class Alloc >
+		bool operator==(const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs) 
+		{
+			if (lhs.size() != rhs.size()) {
+				return false;
+			}
+			return ft::equal(lhs.begin(), lhs.end(), rhs.begin());
+		}
+
+	template< class Key, class T, class Compare, class Alloc >
+		bool operator!=(ft::map<Key,T,Compare,Alloc> const& lhs, ft::map<Key,T,Compare,Alloc> const& rhs)
+		{
+			return !(lhs == rhs);
+		}
+
+	template< class Key, class T, class Compare, class Alloc >
+		bool operator<(ft::map<Key,T,Compare,Alloc> const& lhs, ft::map<Key,T,Compare,Alloc> const& rhs)
+		{
+			return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+		}
+
+	template< class Key, class T, class Compare, class Alloc >
+		bool operator<=(ft::map<Key,T,Compare,Alloc> const& lhs, ft::map<Key,T,Compare,Alloc> const& rhs)
+		{
+			return !(rhs < lhs);
+		}
+
+	template< class Key, class T, class Compare, class Alloc >
+		bool operator>(ft::map<Key,T,Compare,Alloc> const& lhs, ft::map<Key,T,Compare,Alloc> const& rhs)
+		{
+			return rhs < lhs;
+		}
+
+	template< class Key, class T, class Compare, class Alloc >
+		bool operator>=(ft::map<Key,T,Compare,Alloc> const& lhs, ft::map<Key,T,Compare,Alloc> const& rhs)
+		{
+			return !(lhs < rhs);
+		}
+
+	// --> Swap of vectors
+
+	template< class Key, class T, class Compare, class Alloc >
+		void swap(ft::map<Key,T,Compare,Alloc>& lhs, ft::map<Key,T,Compare,Alloc>& rhs)
+		{
+			lhs.swap(rhs);
+			return;
+		}
+	//end of ft namespace
+};
 #endif
