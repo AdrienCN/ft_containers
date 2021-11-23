@@ -61,6 +61,9 @@ namespace ft
 			{
 				node	*current = _ptr;
 				//Trouve la plus petite valeur de ma branche droite
+				if (!current || current->is_end == true)
+					return (*this);
+
 				if (current->right != NULL)
 					_ptr = findMinChild(current->right);
 				else
@@ -183,69 +186,26 @@ namespace ft
 
 			const_iterator_map & operator++()
 			{
-				/*node *cur = _ptr;
-				if (cur->right)
-				{
-					std::cout << "it->right exist" << std::cout;
-					cur = cur->right;
-					while (cur->left)
-						cur = cur->left;
-					_ptr = cur;
-					return (_ptr);
-				}
-				std::cout << "it->right == NULL" << std::cout;
-
-				while (cur != cur->parent->left)
-				{
-					if (cur->is_root == true)
-						cur = cur->right;
-					else
-						cur = cur->parent;
-				}
-				_ptr = cur;
-				return (_ptr);
-			}
-
-*/
-
-
-				
-				std::cout << "it++ start" << std::endl;
 				node	*current = _ptr;
 				//Trouve la plus petite valeur de ma branche droite
-				if (current->right)
-				{
-					std::cout << "it->right exist" << std::endl;
+				if (!current || current->is_end == true)
+					return (*this);
+				if (current->right != NULL)
 					_ptr = findMinChild(current->right);
-				}//Trouve mon premier parent > moi
 				else
 				{
-					std::cout << "_ptr->first == " <<  _ptr->pr.first << std::endl;
-					std::cout << "_ptr->left->first == " <<  _ptr->left->pr.first << std::endl;
-					std::cout << "_ptr->right->first == " <<  _ptr->right->pr.first << std::endl;
-					std::cout << "it->right == NULL" << std::endl;
-					node	*parent = _ptr->parent;
-					
+
+					node	*parent = current->parent;
 					//Remonter l'arbre:
 					//Tant que j'ai un parent ET que je suis son fils droit
 					while (parent && parent->right == current)
 					{
-						
-						std::cout << "parent->first == " << parent->pr.first << std::endl;
-						if (parent->left)
-							std::cout << "parent->left->first == " << parent->left->pr.first << std::endl;
-						if (parent->right)
-							std::cout << "parent->right->first == " << parent->right->pr.first << std::endl;
-						if (parent->is_root == true)
-							std::cout << "ERROR : probing _preRoot" << std::endl;
 						current = parent;
 						parent = parent->parent;
 					}
 					_ptr = parent;
 				}
-				std::cout << "it++ end" << std::endl;
 				return (*this);
-				
 			}
 
 			const_iterator_map	operator++(int)

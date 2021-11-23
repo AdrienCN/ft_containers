@@ -21,6 +21,20 @@
 int main()
 {
 	ft::map<MAP> map;
+
+	char c = 'a';
+	for (int i  = 5; i > 0; i--)
+	{	
+		map.insert(ft::make_pair(c, 6));
+		c += 1;
+	}
+
+	ft::map<MAP> range(map.begin(), map.end());
+	ft::map<MAP> copy(map);
+	ft::map<MAP> assign = map;
+
+
+	/*
 	//exit(1);
 	map.insert(ft::make_pair('e', 6));
 
@@ -129,16 +143,13 @@ int main()
 		a++;
 	}
 
-	/*	std::cout << "start iterator test" << std::endl;
-		for (ft::map<MAP>::iterator it = map.begin(); it != map.end(); it++)
-		{
+	std::cout << "start iterator test" << std::endl;
+	for (ft::map<MAP>::iterator it = map.begin(); it != map.end(); it++)
+	{
 		std::cout << "it = " << it->first << std::endl;
-		}
-		*/
-	//	ft::map<MAP> copy(map);
-	//ft::map<MAP> range(map.begin(), map.end());
-	//	ft::map<MAP> assign = map;
-
+	}
+	
+	*/
 
 
 	return (1);
