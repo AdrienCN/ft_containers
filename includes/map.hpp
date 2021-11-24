@@ -1,19 +1,9 @@
 #ifndef MAP_HPP
 #define MAP_HPP
-
-
-// std::cout for degub --> To remove before push
-// exit for debug
-#include <iostream> 
-#include <stdlib.h>
-
-#define GREEN "\033[0;32m" 
-#define RED "\033[0;31m" 
-#define YLW "\033[0;33m" 
-#define RESET "\033[0;00m" 
 //std::less
 #include <functional>
-
+//std::cout  to print if necessary for correction
+#include <iostream>
 //std::allocator
 #include <memory>
 #include "iterator.hpp"
@@ -22,6 +12,7 @@
 #include "reverse_iterator.hpp"
 #include "iterator_map.hpp"
 #include "node.hpp"
+
 namespace ft
 {
 	template <class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key, T> > >
@@ -121,25 +112,11 @@ namespace ft
 				_end->right = NULL;
 				_end->left = NULL;
 				_end->is_end = true;
-				//std::cout << "Before : _end - 1  = " << (--this->end())->first << "_begin = " << this->begin()->first <<  std::endl;
-				/*std::cout << RED << "Range Construction start" << std::endl;
-				  std::cout << "iterator last = " << last->first << std::endl;
-				  std::cout << "\t//////" << std::endl;
-
-				  */
-				int i = 0;	
 				while (first != last)
 				{
-				//	std::cout << "first = " << first->first ;
-				//	std::cout << " |  i = " << i << std::endl;
 					this->insert(*first);
 					first++;
-					i++;
-					//this->_printNode(this->end());
 				}
-				//this->_printNode(this->end());
-				//	std::cout << "Range Construction end " << RESET << std::endl;
-				//std::cout << "After : _end - 1  = " << (--this->end())->first << "_begin = " << this->begin()->first <<  std::endl;
 
 			}
 
@@ -162,8 +139,6 @@ namespace ft
 
 				for (const_iterator it = x.begin(); it != x.end(); it++)
 				{
-					//	std::cout << "test" << std::endl;
-					//	std::cout << "- @) Copying key [" << it->first << "]" << std::endl;
 					this->insert(*it);
 				}
 			}
@@ -270,14 +245,12 @@ namespace ft
 				//Modifiers
 				pair<iterator, bool>	insert(const value_type &val) 
 				{
-				//	std::cout << "\t****insert : " << val.first << " ****" << std::endl;
 					//Cherche si la key est deja presente
 					node *needle = this->_findVal(_root, val);
 
 					//Noeud absent. On l'insere
 					if (needle == NULL)
 					{	
-						//	std::cout << "insert : needle == NULL (" << val.first <<") " << std::endl;
 						//Insere ET balance
 						//return new balanced tree ROOT
 
@@ -286,7 +259,6 @@ namespace ft
 							_root = _initTree(_root, val);
 						else
 							_root = this->_myInsert(_root, _root, val);
-						//		std::cout << RED << "New ROOT = " << _root->pr.first << RESET <<  std::endl;
 						//update les iterator de pos
 						this->_updatePosition();
 						//	this->_printInorder(_root);
@@ -294,13 +266,11 @@ namespace ft
 						this->_size += 1;
 						iterator it(_findVal(_root, val));
 
-						//						std::cout << "\t****insert terminated ****\n"  << std::endl;
 						return (ft::make_pair<iterator, bool> (it, true));
 					}
 					else
 					{
 						iterator it(needle);
-						//						std::cout << "insert : needle == exist " << std::endl;
 						return (ft::make_pair<iterator, bool> (it, false));
 					}
 				}
@@ -334,12 +304,10 @@ namespace ft
 					node *needle = _findVal(_root, val);
 					if (needle)
 					{
-				//		std::cout << RED << "Erasing : key[" << val.first << "]" << RESET << std::endl;
 						_root = this->_myErase(_root, val);
 						this->_updatePosition();
 						if (_size > 0)
 							_size -= 1;
-					//	std::cout << "\t*********#####__adrien__#####**********" << std::endl;
 					//	this->_printTest(_root);
 						return (1);
 					}
@@ -360,31 +328,9 @@ namespace ft
 					}
 				}
 
-				/*	
-					int count = 0;
-					for (iterator it = first; it != second; it++)
-					{
-						count++;
-					}
-					int i = 0;
-					iterator next;
-					while (i < count)
-					{
-				//		std::cout << "count (" << count << ") | i = " << i << std::endl;
-						next = first;
-						next++;
-						this->erase(first->first);
-						first = next;
-						i++;
-					}
-				}
-*/
-
-
 				void swap(map & x)
 				{
 
-					//					std::cout << GREEN << "SWAPING" << std::endl;
 
 					node				*tmp_root = x._root;
 					node				*tmp_end = x._end;
@@ -409,7 +355,6 @@ namespace ft
 					_allocator = tmp_allocator;
 					_allocator_node = tmp_allocator_node;
 					_size = tmp_size;
-					//					std::cout  << "SWAP_END " <<  RESET << std::endl;
 				}
 
 				void clear() 
@@ -592,11 +537,6 @@ namespace ft
 
 		void	_deletePostOrder(node *root)
 		{
-			/*					if (root == _root)
-								std::cout << "clear() DELETES \"_root\"" << std::endl;
-								if (root == _end)
-								std::cout << "clear() DELETES \"_end\"" << std::endl;
-								*/					
 			if (root == NULL || root == _end)
 				return;
 			this->_deletePostOrder(root->left);
@@ -607,7 +547,6 @@ namespace ft
 
 		void	_updatePosition(void)
 		{
-			//					std::cout << "Update postion : START" << std::endl;
 			node *max_child;
 			//l'arbre est vide et/ou Root a ete supprime
 			if (_root == NULL)
@@ -621,7 +560,6 @@ namespace ft
 			//suite a un clear par exemple ?
 			if (_end == NULL)
 			{
-				std::cout << RED << "change in END" << RESET << std::endl;
 				_end = _newNode();
 			}
 
@@ -632,7 +570,6 @@ namespace ft
 			_end->parent = max_child;
 			_end->is_end = true;
 			max_child->right = _end;
-			//					std::cout << "Update postion : END " << std::endl;
 		}
 
 		node* _findMinChild(node *subtree) const
@@ -652,7 +589,6 @@ namespace ft
 			node *current = subtree;
 			while (current->right && current->right != _end)
 				current = current->right;
-			//					std::cout << "MaxChild = Node(" << current->pr.first << ")" << std::endl;
 			return current;
 		}
 
@@ -664,10 +600,8 @@ namespace ft
 
 			key_type new_key = val.first;
 			key_type subroot_key = subroot->pr.first;
-		//	std::cout << YLW << "new_key = " << new_key << " | subroot_key = " << subroot_key <<  RESET << std::endl;
 			if (new_key == subroot_key)
 			{
-		//		std::cout << GREEN << "here" <<  RESET << std::endl;
 				node *tmp = NULL;
 				//Un fils ou aucun fils
 				if ((subroot->right == NULL || subroot->right == _end) || subroot->left == NULL)
@@ -676,27 +610,22 @@ namespace ft
 					//leaf case
 					if ((subroot->right == NULL && subroot->left == NULL) || (subroot->left == NULL && subroot->right == _end))
 					{
-			//			std::cout << GREEN << "leaf case" <<  RESET << std::endl;
 						subroot = NULL;
 					}
 					else
 					{
-			//			std::cout << GREEN << "one sons" <<  RESET << std::endl;
 						if (subroot->right == NULL || subroot->right->pr == _end->pr)
 							subroot = subroot->left;
 						else
 							subroot = subroot->right;
-						//subroot = subroot->right ? subroot->right : subroot->left;
 						subroot->parent = tmp->parent;
 					}
-			//		std::cout << RED << "leaf deleted (" << tmp->pr.first << ") ("<<tmp->pr.second << ") "  << RESET << std::endl;
 					_freeNode(tmp); // old subroot
 
 				}
 				//deux fils
 				else
 				{
-				//	std::cout << GREEN << "subroot (" << subroot->pr.first << ")("<< subroot->pr.second << ") has Two sons : " <<  RESET << std::endl;
 					//this->_printNode(subroot);
 					node *successor = this->_findMinChild(subroot->right);
 
@@ -711,25 +640,15 @@ namespace ft
 					tmp->left->parent = tmp;
 					if (tmp->parent->right == subroot)
 						tmp->parent->right = tmp;
-					else if (tmp->parent->left == subroot)
+					else 
 						tmp->parent->left = tmp;
-					else
-					{
-						std::cout << "ERROR in ERASE ligne 645" << std::endl;
-						exit(5);
-					}
 					//Etapte 3 kill subroot
-				//	std::cout << RED << "subroot deleted (" << subroot->pr.first << ") ("<< subroot->pr.second << ") "  << RESET << std::endl;
 					_freeNode(subroot);
 
 					//Etape 4 fait pointer subroot sur le remplacant
 					subroot = tmp;
 
 					//kill my child
-				//	std::cout << "Tree before erasing : " << std::endl;
-				//	for (iterator it = this->begin(); it != this->end(); it++)
-				//		this->_printNode(it);
-			//		std::cout << RED << "in_ft_erasing : key[" << subroot->pr.first << "]" << RESET << std::endl;
 					subroot->right = this->_myErase(subroot->right, subroot->pr);
 				}
 			}
@@ -742,51 +661,35 @@ namespace ft
 			if (subroot == NULL)
 				return (subroot);
 			//calcul sa nouvelle hauteur
-		//	std::cout << YLW << "balancing node (" << subroot->pr.first << ")("<< subroot->pr.second << ")"  << RESET << std::endl;
 			subroot->height = _getHeight(subroot);
 			int balance = _isBalanced(subroot);
 
 			if (balance < -1 || balance > 1)
 				subroot = this->_doEraseRotation(subroot, balance);
-		//	std::cout << "Tree before returning: " << std::endl;
-		//			for (iterator it = this->begin(); it != this->end(); it++)
-		//				this->_printNode(it);
-
 			return (subroot);
 		}
 
 		node* _doEraseRotation(node* node, int balance)
 		{
-	/*		if (balance > 1)
-				std::cout <<  RED << "left branch heavy : ";
-			else
-				std::cout <<  RED << "right branch heavy : ";
-*/
 			if (balance > 1 && _isBalanced(node->left) >= 0)
 			{
-//				std::cout <<  RED << "LL case : " << RESET << std::endl;
 				return this->_rightRotate(node);
 			}
 			if (balance > 1 && _isBalanced(node->left) < 0)
 			{
-//				std::cout <<  RED << "LR case : " << RESET << std::endl;
 				node->left = this->_leftRotate(node->left);
 				return this->_rightRotate(node);
 			}
 			if (balance < -1 &&	_isBalanced(node->right) <= 0)
 			{
-//				std::cout <<  RED << "RR case : left_rot of node : " << node->pr.first << RESET << std::endl;
 				return this->_leftRotate(node);
 			
 			}
 			if (balance < -1 &&	_isBalanced(node->right) > 0)
 			{
-//				std::cout <<  RED << "RL case : " << RESET << std::endl;
 				node->right = this->_rightRotate(node->right);
 				return this->_leftRotate(node);
 			}
-			else
-				std::cout << RED << "There is a problem in ERASE_DO_ROTATION line 690" << RESET  << std::endl;
 			return (NULL);
 		}
 
@@ -822,18 +725,13 @@ namespace ft
 
 			//balancer l'arbre apres l'insertion
 			int balance = _isBalanced(subroot);
-			//std::cout << "Node ("<< subroot->pr.first<< ") height = " << subroot->height  << " |  balance =  " <<  balance << std::endl;
 
 			//Tree is NOT balanced
 			//rotate for balancing and return new subroot
 			if (balance < -1 || balance > 1)
 			{
-				//		std::cout << RED << "_doRotation : node (" << subroot->pr.first <<") : " ;
-				//subroot = this->_doRotation(subroot, val, balance);
 				subroot = this->_doRotation(subroot, val, balance);
-				//		std::cout << "Rotation : END" <<  RESET << std::endl;
 			}
-			//	std::cout << GREEN << "LEVEL Node [" << subroot->pr.first << "] | My parent is (" << subroot->parent->pr.first << ")" << RESET << std::endl;
 			return (subroot); // Subtree is balanced return unchanged subroot
 		}
 
@@ -841,7 +739,6 @@ namespace ft
 		{
 			if (node == NULL)
 			{
-				std::cout << "There is a problem at the START OF  DO_ROTATION" << std::endl;
 				return (NULL);
 			}
 			key_type new_key = val.first;
@@ -849,19 +746,15 @@ namespace ft
 			//left branch is heavy
 			if (scenario > 1)
 			{
-				//		std::cout << "Left Heavy : ";
 				key_type node_left_key = node->left->pr.first;
-				//if new_key < node->left->key
 				//left left case
 				if (_comp(new_key, node_left_key) == true)
 				{
-					//			std::cout << "LL case" << std::endl;
 					return (_rightRotate(node));
 				}
 				//left right case
 				else
 				{
-					//			std::cout << "LR case" << std::endl;
 					node->left = _leftRotate(node->left);
 					return (_rightRotate(node));
 				}
@@ -869,23 +762,16 @@ namespace ft
 			//Right branch is heavy
 			else if (scenario < -1)
 			{
-				//		std::cout << "Right Heavy : ";
 				key_type node_right_key = node->right->pr.first;
 				if (_comp(new_key, node_right_key) == false)
 				{
-					//			std::cout << "RR case" << std::endl;
 					return (_leftRotate(node));
 				}
 				else
 				{
-					//			std::cout << "RL case" << std::endl;
 					node->right = _rightRotate(node->right);
 					return (_leftRotate(node));
 				}
-			}
-			else
-			{
-				//		std::cout << "There is a problem at the END OF  DO_ROTATION scenario = " << scenario << std::endl;
 			}
 			return (NULL);
 		}
@@ -947,10 +833,6 @@ namespace ft
 		{
 			if (node == NULL || node == _end || _root->is_init == false)
 			{
-				//		if (node == NULL)
-				//			std::cout << "_findVal : Node = NULL" << std::endl;
-				//		else
-				//			std::cout << "_findVal : Node = _end" << std::endl;
 				return (NULL);
 			}
 			key_type new_key = val.first;
@@ -958,7 +840,6 @@ namespace ft
 
 			if (node_key == new_key)
 			{
-				//	std::cout << "_findVal : Node found!" << std::endl;
 				return (node);
 			}
 			else if (_comp(new_key, node_key) == true)
@@ -970,7 +851,6 @@ namespace ft
 		node* _initTree(node *root, const value_type &val)
 		{
 
-			//	std::cout << "ROOOOOOOT_ROOOOOOOT : _iniTree : Inserting _root value : " << val.first << " ROOOOOOOOOOT_ROOOOOOOOOOT" << std::endl;
 			node *new_node = _allocator_node.allocate(1);
 			_allocator_node.construct(new_node, node(val));
 
@@ -989,7 +869,6 @@ namespace ft
 			_allocator_node.construct(new_node, node(val));
 			new_node->parent = parent;
 
-			//	std::cout << GREEN << "My name is Node [" << new_node->pr.first << "] | My parent is (" << new_node->parent->pr.first << ")" << RESET << std::endl;
 			return (new_node);
 		}
 
@@ -1062,17 +941,12 @@ namespace ft
 				std::cout << "(NULL)" << std::endl;
 			else
 				std::cout << "(END_NODE)" << std::endl;
-			//std::cout << "left branch : ";
-			std::cout << "\t***" << std::endl;
 			if (root->left)
 			{
-				std::cout << "--*--*-->left id.[" << root->pr.first << "]" << std::endl;
 				_printTest(root->left);
 			}
-			//std::cout << "right branch : ";
 			if (root->right)
 			{
-				std::cout << "--*--*-->right id.[" << root->pr.first << "]" << std::endl;
 				_printTest(root->right);
 			}
 			return;

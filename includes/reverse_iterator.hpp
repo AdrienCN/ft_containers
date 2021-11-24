@@ -11,9 +11,6 @@ namespace ft
 
 			public:
 
-				// ********** MEMBER TYPES ********** 
-				// inherited from iterator_traits + add iterator_type
-
 				typedef Iterator iterator_type;           
 				typedef typename iterator_traits<Iterator>::difference_type difference_type;            
 				typedef typename iterator_traits<Iterator>::value_type value_type;
@@ -22,9 +19,6 @@ namespace ft
 				typedef typename iterator_traits<Iterator>::iterator_category iterator_category; 
 
 
-				// ********** MEMBER FUNCTIONS ********** 
-
-				//---> Constructeurs, Destructeur et operateur=
 
 				reverse_iterator(void) : _current() {} //constructeur par défaut
 

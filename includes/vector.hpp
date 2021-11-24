@@ -8,6 +8,8 @@
 #include <stdexcept>
 //std::allocator
 #include <memory>
+//std::cout to print if necessary during correction
+#include <iostream>
 
 
 #define SPACE _size * 2		
@@ -185,7 +187,6 @@ namespace ft
 						//add capacity first
 						if (n > _capacity)
 							this->reserve(SPACE + n);
-						//add new element
 						while (_size < n)
 						{
 							_allocator.construct(_array + _size, val);
@@ -243,7 +244,7 @@ namespace ft
 				const_reference at(size_type n) const
 				{
 					if (n < 0 || n >= _size)
-						throw std::out_of_range("out_of_range");
+						throw std::out_of_range("Exception : [at] : Out of range");
 					return _array[n];
 				}
 

@@ -2,8 +2,7 @@
 #define ITERATOR_MAP
 #include  "node.hpp"
 #include  "iterator.hpp"
-//for debug to remove
-#include <iostream>
+
 namespace ft
 {
 	template<typename T>
@@ -114,6 +113,7 @@ namespace ft
 				return tmp;
 			}
 		private:
+
 		node* findMinChild(node *subtree)
 				{
 					if (subtree == NULL)
@@ -241,6 +241,7 @@ namespace ft
 			}
 			//end of const_iterator_map
 		private:
+
 		node* findMinChild(node *subtree)
 				{
 					if (subtree == NULL)
