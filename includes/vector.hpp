@@ -6,9 +6,9 @@
 #include "iterator_vector.hpp"
 #include "condition.hpp"
 #include <stdexcept>
+//std::allocator
 #include <memory>
 
-//std::allocator
 
 #define SPACE _size * 2		
 #define MIN_SPACE 128
@@ -207,8 +207,8 @@ namespace ft
 				void	reserve(size_type n)
 				{
 					if (n > this->max_size())
-						throw std::length_error("Reserve: length > MAX_SIZE");
-					if (n > _capacity)
+						throw std::length_error("Exception : [reserve] : length > MAX_SIZE");
+					 if (n > _capacity)
 					{
 						pointer newarray;
 						newarray = _allocator.allocate(n);
@@ -236,7 +236,7 @@ namespace ft
 				reference at(size_type n)
 				{
 					if (n < 0 || n >= _size)
-						throw std::out_of_range("out_of_range");
+						throw std::out_of_range("Exception : [at] : Out of range");
 					return _array[n];
 				}
 
@@ -304,8 +304,8 @@ namespace ft
 					/*if (_size == 0)
 					  return;
 					  */
-					_allocator.destroy(_array + _size);
 					_size--;
+					_allocator.destroy(_array + _size);
 				}
 
 				iterator insert (iterator position, const value_type &val)

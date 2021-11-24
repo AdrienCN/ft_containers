@@ -1,9 +1,9 @@
 #include <iostream>
 #include <string>
-#include "test/common.hpp"
-#include "test/test_vector.hpp"
-#include "test/test_map.hpp"
-#include "test/test_stack.hpp"
+#include "common.hpp"
+#include "test_vector.hpp"
+#include "test_map.hpp"
+#include "test_stack.hpp"
 
 int main(int argc, char **argv) 
 {

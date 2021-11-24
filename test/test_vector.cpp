@@ -1,8 +1,9 @@
 #include "test_vector.hpp"
-
+#define RESET "\033[0;00m" 
+#define UWHT "\033[4;37m" 
 template<typename T>
 void print_vector_content(const ft::vector<T>& to_print) {
-	std::cout << "The vector contains : ";
+	std::cout << UWHT << "The vector contains" << RESET << ": " ;
 	for(size_t i = 0; i < to_print.size(); i++)
 		std::cout << to_print[i] << ", ";
 	std::cout << std::endl;

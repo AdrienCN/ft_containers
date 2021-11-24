@@ -1,8 +1,10 @@
-SRCS		= main.cpp
+SRCS		= main_test.cpp \
+			  test_vector.cpp \
+			  test_stack.cpp \
+			  test_map.cpp \
+			  common.cpp 
 		  
-#OBJ_DIR		= objs/
-
-OBJS		= $(SRCS:.cpp=.o)
+OBJS		= $(addprefix test/, $(SRCS:.cpp=.o))
 
 HEADER		= -I includes
 
