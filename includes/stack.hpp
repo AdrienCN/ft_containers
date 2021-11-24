@@ -85,12 +85,6 @@ namespace ft
 				{
 					_ctnr.pop_back();
 				}
-
-				friend bool operator== <T, Container>(stack const& lhs, stack const& rhs);
-				friend bool operator!= <T, Container>(stack const& lhs, stack const& rhs);
-				friend bool operator< <T, Container>(stack const& lhs, stack const& rhs);
-				friend bool operator<= <T, Container>(stack const& lhs, stack const& rhs);
-				friend bool operator> <T, Container>(stack const& lhs, stack const& rhs);
-				friend bool operator>= <T, Container>(stack const& lhs, stack const& rhs);};
+		};
 };
 #endif

@@ -93,19 +93,9 @@ namespace ft
 				return (this->_ptr + n);
 			}
 
-			friend iterator_vector  operator+(difference_type n, iterator_vector const & rhs)
-			{
-				return (rhs._ptr + n);
-			}
-
 			iterator_vector  operator-(difference_type n) const
 			{
 				return (this->_ptr  - n);
-			}
-
-			difference_type  operator-(iterator_vector const & rhs) const
-			{
-				return (this->_ptr - rhs._ptr);
 			}
 
 			bool operator<(ft::const_iterator_vector<T> const & rhs) const
@@ -238,19 +228,10 @@ namespace ft
 				return (this->_ptr + n);
 			}
 
-			friend const_iterator_vector operator+(difference_type n, const_iterator_vector const & rhs)
-			{
-				return (const_iterator_vector(n + rhs._ptr));
-			}
 
 			const_iterator_vector  operator-(difference_type n) const
 			{
 				return (this->_ptr  - n);
-			}
-
-			friend difference_type operator-(const_iterator_vector const & lhs, const_iterator_vector const & rhs)
-			{
-				return (lhs._ptr - rhs._ptr);
 			}
 
 			bool operator<(const_iterator_vector const & rhs) const
@@ -291,5 +272,41 @@ namespace ft
 		protected:
 			//Empty	
 	};
+
+		template <class T>
+		iterator_vector<T> operator+(typename iterator_vector<T>::difference_type n, const iterator_vector<T>& it)
+		{
+			return n + it._ptr;
+		}
+	template <class T>
+		const_iterator_vector<T> operator+(typename const_iterator_vector<T>::difference_type n, const const_iterator_vector<T>& it)
+		{
+			return n + it._ptr;
+		}
+
+	template <class T>
+		typename const_iterator_vector<T>::difference_type operator-(const const_iterator_vector<T> & lhs, const const_iterator_vector<T>& rhs)
+		{
+			return lhs._ptr - rhs._ptr;
+		}
+
+	template <class T>
+		typename iterator_vector<T>::difference_type operator-(const iterator_vector<T> & lhs, const iterator_vector<T>& rhs)
+		{
+			return lhs._ptr - rhs._ptr;
+		}
+
+
+	template <class T>
+		typename const_iterator_vector<T>::difference_type operator-(const iterator_vector<T> & lhs, const const_iterator_vector<T>& rhs)
+		{
+			return lhs._ptr - rhs._ptr;
+		}
+
+	template <class T>
+		typename const_iterator_vector<T>::difference_type operator-(const const_iterator_vector<T> & lhs, const iterator_vector<T>& rhs)
+		{
+			return lhs._ptr - rhs._ptr;
+		}
 };
 #endif
