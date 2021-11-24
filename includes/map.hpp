@@ -181,30 +181,33 @@ namespace ft
 					//detruit tout sauf _preRoot 
 					this->_deletePostOrder(_root);
 					_freeNode(_preRoot);
+					_freeNode(_end);
 				}
 
 				//Iterator most left child
 				iterator begin()
 				{
-					return (this->_findMinChild(_root));
+					if (this->empty() == false)
+						return (this->_findMinChild(_root));
+					else
+						return (_end);
 				}
 
 				const_iterator begin() const
 				{
-					return (this->_findMinChild(_root));
+					if (this->empty() == false)
+						return (this->_findMinChild(_root));
+					else
+						return (_end);
 				}
 
 				// empty right child of most right node
 				iterator end()
 				{
-					if (this->empty()) // defini dans cplusplus
-						return (this->begin());
 					return (this->_end);
 				}
 				const_iterator end() const
 				{
-					if (this->empty())
-						return (this->begin());
 					return (this->_end);
 				}
 
@@ -260,6 +263,7 @@ namespace ft
 					   */
 					value_type val = ft::make_pair(k, mapped_type());
 					iterator it = this->insert(val).first;
+				//	this->_printTest(_root);
 					return (it->second);
 				}
 
@@ -412,7 +416,6 @@ namespace ft
 				{
 					this->_deletePostOrder(_root);
 					_root = NULL;
-					_end = NULL;
 					_updatePosition();
 					_size = 0;
 				}
@@ -445,7 +448,7 @@ namespace ft
 					if (needle)
 						return (needle);
 					else
-						return (_end);
+						return (this->end());
 				}
 
 				size_type count(const key_type &k) const
@@ -593,8 +596,9 @@ namespace ft
 								std::cout << "clear() DELETES \"_root\"" << std::endl;
 								if (root == _end)
 								std::cout << "clear() DELETES \"_end\"" << std::endl;
-								*/					if (root == NULL)
-			return;
+								*/					
+			if (root == NULL || root == _end)
+				return;
 			this->_deletePostOrder(root->left);
 			this->_deletePostOrder(root->right);
 			_freeNode(root);
@@ -616,7 +620,10 @@ namespace ft
 				max_child = _findMaxChild(_root);
 			//suite a un clear par exemple ?
 			if (_end == NULL)
+			{
+				std::cout << RED << "change in END" << RESET << std::endl;
 				_end = _newNode();
+			}
 
 			_preRoot->right = _root;
 			_preRoot->left = _root;
