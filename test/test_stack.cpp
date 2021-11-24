@@ -4,7 +4,7 @@ void test_stack_constructor(void) {
 	std::cout << std::endl << "Theses tests will focus on \033[31;1;4mconstructors\033[0m: " << std::endl;
 	std::cout << "Default constructor: " << std::endl;
 	
-	ft::stack<int> test_constructor1;
+	NAMESPACE::stack<int> test_constructor1;
 	
 	std::cout << "Let's push() 42, 21 and 0" << std::endl;
 	test_constructor1.push(42);
@@ -13,7 +13,7 @@ void test_stack_constructor(void) {
 	std::cout << "Let's see top() of the first stack : " << test_constructor1.top() << std::endl;
 	std::cout << "Let's test the copy constructor and create a new container from the first one: " << std::endl;
 	
-	ft::stack<int> test_constructor2 = ft::stack<int>(test_constructor1);
+	NAMESPACE::stack<int> test_constructor2 = NAMESPACE::stack<int>(test_constructor1);
 	
 	std::cout << "Let's see top of the second stack : " << test_constructor2.top() << std::endl;
 	std::cout << "Let's remove the top with pop()" << std::endl;
@@ -21,7 +21,7 @@ void test_stack_constructor(void) {
 	std::cout << "Let's see top of the second stack : " << test_constructor2.top() << std::endl;
 	std::cout << "Let's try the assignation operator from the second stack: " << std::endl;
 	
-	ft::stack<int> test_assignation;
+	NAMESPACE::stack<int> test_assignation;
 	
 	test_assignation = test_constructor2;
 	std::cout << "Let's see top of the third stack : " << test_assignation.top() << std::endl;
@@ -30,7 +30,7 @@ void test_stack_constructor(void) {
 void test_stack_push(void) {
 	std::cout << std::endl << "Theses tests will focus on \033[31;1;4mpush() && top()\033[0m: " << std::endl;
 	
-	ft::stack<std::string> test_push;
+	NAMESPACE::stack<std::string> test_push;
 	
 	std::cout << "Let's push() 'batman', 'robin' and 'pikachu'" << std::endl;
 	test_push.push("batman");
@@ -44,7 +44,7 @@ void test_stack_push(void) {
 void test_stack_pop(void) {
 	std::cout << std::endl << "Theses tests will focus on \033[31;1;4mpop() && top()\033[0m: " << std::endl;
 	
-	ft::stack<std::string> test_pop;
+	NAMESPACE::stack<std::string> test_pop;
 	
 	std::cout << "Let's push() 'batman', 'robin' and 'pikachu'" << std::endl;
 	test_pop.push("batman");
@@ -62,7 +62,7 @@ void test_stack_pop(void) {
 void test_stack_size(void) {
 	std::cout << std::endl << "Theses tests will focus on \033[31;1;4mempty() and size()\033[0m: " << std::endl;
 
-	ft::stack<std::string> test_size;
+	NAMESPACE::stack<std::string> test_size;
 
 	std::cout << "Let's see the size() on empty container: " << test_size.size();
 	std::cout << " and empty() is: " << verbose_bool(test_size.empty()) << std::endl;
@@ -95,7 +95,7 @@ void test_stack_size(void) {
 void test_stack_comparison(void) {
 	std::cout << std::endl << "Theses tests will focus on \033[31;1;4mcomparison operators\033[0m: " << std::endl;
 	
-	ft::stack<char> test_comparison1, test_comparison2, test_comparison3;
+	NAMESPACE::stack<char> test_comparison1, test_comparison2, test_comparison3;
 	
 	std::cout << "test's create two identical char stacks with 'a', 'b', 'c', 'd' : " << std::endl;
 	test_comparison1.push('a');

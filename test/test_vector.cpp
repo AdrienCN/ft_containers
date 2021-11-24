@@ -1,8 +1,10 @@
 #include "test_vector.hpp"
+
 #define RESET "\033[0;00m" 
 #define UWHT "\033[4;37m" 
+
 template<typename T>
-void print_vector_content(const ft::vector<T>& to_print) {
+void print_vector_content(const NAMESPACE::vector<T>& to_print) {
 	std::cout << UWHT << "The vector contains" << RESET << ": " ;
 	for(size_t i = 0; i < to_print.size(); i++)
 		std::cout << to_print[i] << ", ";
@@ -10,7 +12,7 @@ void print_vector_content(const ft::vector<T>& to_print) {
 }
 
 template<typename T>
-void print_vector_state(const ft::vector<T>& to_print) {
+void print_vector_state(const NAMESPACE::vector<T>& to_print) {
 	print_vector_content(to_print);
 	std::cout << "The size() is: " << to_print.size();
 	std::cout << ", so empty() is " << verbose_bool(to_print.empty());
@@ -21,7 +23,7 @@ void test_vector_constructor(void) {
 	std::cout << std::endl << "Tests for \033[31;1;4mconstructors\033[0m: " << std::endl;
 	std::cout << "Let's use the default constructor";
 	std::cout << " and print the state of the first vector: " << std::endl;
-	ft::vector<std::string> test_constructor1;
+	NAMESPACE::vector<std::string> test_constructor1;
 	print_vector_state(test_constructor1);
 
 	std::cout << std::endl << "Now let's push 'salameche' and 'pikachu'";
@@ -31,30 +33,30 @@ void test_vector_constructor(void) {
 	print_vector_state(test_constructor1);
 
 	std::cout << std::endl << "Let's use the copy constructor and print the state the second vector: " << std::endl;
-	ft::vector<std::string> test_constructor2 = ft::vector<std::string>(test_constructor1);
+	NAMESPACE::vector<std::string> test_constructor2 = NAMESPACE::vector<std::string>(test_constructor1);
 	print_vector_state(test_constructor2);
 
 	std::cout << std::endl << "Let's use the constructor with 42 copies of default T(): " << std::endl;
-	ft::vector<std::string> test_constructor3 = ft::vector<std::string>(42);
+	NAMESPACE::vector<std::string> test_constructor3 = NAMESPACE::vector<std::string>(42);
 	print_vector_state(test_constructor3);
 
 	std::cout << std::endl << "Let's use the constructor with 42 copies of 'melofee': " << std::endl;
-	ft::vector<std::string> test_constructor4 = ft::vector<std::string>(42, "melofee");
+	NAMESPACE::vector<std::string> test_constructor4 = NAMESPACE::vector<std::string>(42, "melofee");
 	print_vector_state(test_constructor4);
 
 	std::cout << std::endl << "Let's use the constructor with InputIt from the first vector: " << std::endl;
-	ft::vector<std::string> test_constructor5 = ft::vector<std::string>(test_constructor1.begin(), test_constructor1.end());
+	NAMESPACE::vector<std::string> test_constructor5 = NAMESPACE::vector<std::string>(test_constructor1.begin(), test_constructor1.end());
 	print_vector_state(test_constructor5);
 
 	std::cout << std::endl << "Finaly let's try the assignation with the melofee vector " << std::endl;
-	ft::vector<std::string> test_constructor6;
+	NAMESPACE::vector<std::string> test_constructor6;
 	test_constructor6 = test_constructor4;
 	print_vector_state(test_constructor6);
 }
 
 void test_vector_pushpop_back(void) {
 	std::cout << std::endl << "Tests for \033[31;1;4mpush_back()\033[0m: " << std::endl;
-	ft::vector<std::string> test_push_back;
+	NAMESPACE::vector<std::string> test_push_back;
 
 	std::cout << "Let's create a vector then push_back() 'mewtwo', 'articodin' and 'raflesia': " << std::endl;
 	test_push_back.push_back("mewtwo");
@@ -75,13 +77,13 @@ void test_vector_pushpop_back(void) {
 
 void test_vector_assign(void) {
 	std::cout << std::endl << "Tests for \033[31;1;4massign()\033[0m: " << std::endl;
-	ft::vector<std::string> test_assign1;
+	NAMESPACE::vector<std::string> test_assign1;
 
 	std::cout << "Let's try assign 21 'roudoudou' on an empty vector: " << std::endl;
 	test_assign1.assign(21, "roudoudou");
 	print_vector_state(test_assign1);
 
-	ft::vector<std::string> test_assign2;
+	NAMESPACE::vector<std::string> test_assign2;
 	std::cout << std::endl << "Let's create a second vector";
 	std::cout << " then push_back() 'mewtwo', 'articodin' and 'raflesia': " << std::endl;
 	test_assign2.push_back("mewtwo");
@@ -92,7 +94,7 @@ void test_vector_assign(void) {
 	test_assign2.assign(12, "asticot");
 	print_vector_state(test_assign2);
 
-	ft::vector<std::string> test_assign3;
+	NAMESPACE::vector<std::string> test_assign3;
 	std::cout << std::endl << "Let's create an third empty container";
 	std::cout << ", and use assign with iterators from the first container:" << std::endl;
 	test_assign3.assign(test_assign1.begin(), test_assign1.end());
@@ -101,7 +103,7 @@ void test_vector_assign(void) {
 
 void test_vector_frontback(void) {
 	std::cout << std::endl << "Tests for \033[31;1;4mfront() & back()\033[0m: " << std::endl;
-	ft::vector<std::string> test_front;
+	NAMESPACE::vector<std::string> test_front;
 
 	std::cout << "Let's create a vector with 'raichu', 'machopeur' and 'nosferapti': " << std::endl;
 	test_front.push_back("raichu");
@@ -126,13 +128,13 @@ void test_vector_insert(void) {
 	std::cout << std::endl << "Tests for \033[31;1;4minsert()\033[0m: " << std::endl;
 
 	std::cout << "Let's insert on empty vector<int> container:" << std::endl;
-	ft::vector<int> test_insert1;
+	NAMESPACE::vector<int> test_insert1;
 	std::cout << "*First let's try to insert at pos = begin() with integer 42 :" << std::endl;
 	test_insert1.insert(test_insert1.begin(), 42);
 	print_vector_state(test_insert1);
 	std::cout << "*Let's create a new empty container";
 	std::cout << " and try to insert at pos = end() with integer 42 :" << std::endl;
-	ft::vector<int> test_insert2;
+	NAMESPACE::vector<int> test_insert2;
 	test_insert2.insert(test_insert2.end(), 42);
 	print_vector_state(test_insert2);
 
@@ -162,7 +164,7 @@ void test_vector_insert(void) {
 
 	std::cout << std::endl << "Let's use the insert prototype with input iterators :" << std::endl;
 	std::cout << "Let's create a new vector<int> with 12 integer -1:" << std::endl;
-	ft::vector<int> test_insert3 = ft::vector<int>(12, -1);
+	NAMESPACE::vector<int> test_insert3 = NAMESPACE::vector<int>(12, -1);
 	print_vector_state(test_insert3);
 	std::cout << "Then let's try to insert this new vector at the end of the previous one:" << std::endl;
 	test_insert1.insert(test_insert1.end(), test_insert3.begin(), test_insert3.end());
@@ -173,11 +175,7 @@ void test_vector_erase(void) {
 	std::cout << std::endl << "Tests for \033[31;1;4merase()\033[0m: " << std::endl;
 
 	std::cout << "Let's create an empty container:" << std::endl;
-	ft::vector<std::string> test_erase1;
-	print_vector_state(test_erase1);
-
-	std::cout << "Let's try to erase begin() on empty container:" << std::endl;
-	test_erase1.erase(test_erase1.begin());
+	NAMESPACE::vector<std::string> test_erase1;
 	print_vector_state(test_erase1);
 
 	std::cout << "Let's create a vector<string> with 'carapuce', 'carabaffe' and 'tortank':" << std::endl;
@@ -197,7 +195,7 @@ void test_vector_erase(void) {
 
 	std::cout << std::endl << "Let's create a vector<string> with 'pikachu',";
 	std::cout << " 'bulbizare', 'herbizare', 'florizard', 'raichu':" << std::endl;
-	ft::vector<std::string> test_erase2;
+	NAMESPACE::vector<std::string> test_erase2;
 	test_erase2.push_back("pikachu");
 	test_erase2.push_back("bulbizare");
 	test_erase2.push_back("herbizare");
@@ -213,7 +211,7 @@ void test_vector_at(void) {
 	std::cout << std::endl << "Tests for \033[31;1;4mat()\033[0m: " << std::endl;
 
 	std::cout << "Let's test the exception on an empty container: " << std::endl;
-	ft::vector<std::string> test_at;
+	NAMESPACE::vector<std::string> test_at;
 	try {
 		std::string test;
 		test = test_at.at(2);
@@ -253,7 +251,7 @@ void test_vector_operator_bracket(void) {
 
 	std::cout << "Let's create a string vector with 'papilusion', 'scarabrute', ";
 	std::cout << "'racaillou', 'mew', 'voltorbe'" << std::endl;
-	ft::vector<std::string> test_operator_bracket;
+	NAMESPACE::vector<std::string> test_operator_bracket;
 	test_operator_bracket.push_back("papilusion");
 	test_operator_bracket.push_back("scarabrute");
 	test_operator_bracket.push_back("racaillou");
@@ -274,7 +272,7 @@ void test_vector_clear(void) {
 	std::cout << std::endl << "Tests for \033[31;1;4mclear()\033[0m: " << std::endl;
 
 	std::cout << "Let's create a int vector with new() with count= 9 elements with value = 6" << std::endl;
-	ft::vector<int>* test_clear = new ft::vector<int>(9, 6);
+	NAMESPACE::vector<int>* test_clear = new NAMESPACE::vector<int>(9, 6);
 	print_vector_state(*test_clear);
 
 	std::cout << "Now let's use clear() and print state of the vector:" << std::endl;
@@ -286,13 +284,13 @@ void test_vector_clear(void) {
 
 void test_vector_max_size(void) {
 	std::cout << std::endl << "Tests for \033[31;1;4mmax_size()\033[0m: " << std::endl;
-	ft::vector<int> test_max_size;
+	NAMESPACE::vector<int> test_max_size;
 	std::cout << "The return of max_size() for a int vector is: " << test_max_size.max_size() << std::endl;
 }
 
 void test_vector_reserve(void) {
 	std::cout << std::endl << "Tests for \033[31;1;4mreserve()\033[0m: " << std::endl;
-	ft::vector<int> test_reserve;
+	NAMESPACE::vector<int> test_reserve;
 
 	std::cout << "Let's test with an empty container:" << std::endl;
 	print_vector_state(test_reserve);
@@ -314,7 +312,7 @@ void test_vector_resize(void) {
 	std::cout << std::endl << "Tests for \033[31;1;4mresize()\033[0m: " << std::endl;
 
 	std::cout << "Let's create an int vector with 10 times integer 42" << std::endl;
-	ft::vector<int> test_resize = ft::vector<int>(10, 42);
+	NAMESPACE::vector<int> test_resize = NAMESPACE::vector<int>(10, 42);
 	print_vector_state(test_resize);
 	std::cout << "Let's try to resize to 5" << std::endl;
 	test_resize.resize(5);
@@ -331,7 +329,7 @@ void test_vector_iterator(void) {
 	std::cout << std::endl << "Tests for \033[31;1;4miterators\033[0m: " << std::endl;
 
 	std::cout << "Let's create a int vector with 4, 8, 15, 16, 23, 42" << std::endl;
-	ft::vector<int> test_iterator;
+	NAMESPACE::vector<int> test_iterator;
 	test_iterator.push_back(4);
 	test_iterator.push_back(8);
 	test_iterator.push_back(15);
@@ -339,7 +337,7 @@ void test_vector_iterator(void) {
 	test_iterator.push_back(23);
 	test_iterator.push_back(42);
 	std::cout << "Let's create an iterator begin() of this vector" << std::endl;
-	ft::vector<int>::iterator it = test_iterator.begin();
+	NAMESPACE::vector<int>::iterator it = test_iterator.begin();
 	std::cout << "*it = " << *it << std::endl;
 	std::cout << "*++it = " << *++it << std::endl;
 	std::cout << "*it++ = " << *it++ << " then *it is : " << *it << std::endl;
@@ -351,7 +349,7 @@ void test_vector_iterator(void) {
 	std::cout << "*(it -= 2) = " << *(it -= 2) << std::endl;
 
 	std::cout << std::endl << "Let's create a constant iterator begin() of this vector" << std::endl;
-	ft::vector<int>::const_iterator cit = test_iterator.begin();
+	NAMESPACE::vector<int>::const_iterator cit = test_iterator.begin();
 	std::cout << "*cit = " << *cit << std::endl;
 	std::cout << "*++cit = " << *++cit << std::endl;
 	std::cout << "*cit++ = " << *cit++ << " then *cit is : " << *cit << std::endl;
@@ -380,19 +378,19 @@ void test_vector_iterator(void) {
 	std::cout << "cit >= it return: " << verbose_bool(cit >= it) << std::endl;
 
 	std::cout << std::endl << "Let's test subtraction it = begin() and it2 = begin() + 2" << std::endl;
-	ft::vector<int>::iterator it2 = test_iterator.begin() + 2;
+	NAMESPACE::vector<int>::iterator it2 = test_iterator.begin() + 2;
 	it = test_iterator.begin();
 	std::cout << "it2 - it = " << (it2 - it) << std::endl;
 
 	std::cout << std::endl << "Let's test operator[] with it = begin() :" << std::endl;
 	size_t i = 0;
-	for (ft::vector<int>::iterator pouit = it; pouit != test_iterator.end(); pouit++) {
+	for (NAMESPACE::vector<int>::iterator pouit = it; pouit != test_iterator.end(); pouit++) {
 		std::cout << "it[" << i << "] = " << it[i] << std::endl;
 		i++;
 	}
 
 	std::cout << std::endl << "Let's create a reverse iterator rbegin()" << std::endl;
-	ft::vector<int>::reverse_iterator rit = test_iterator.rbegin();
+	NAMESPACE::vector<int>::reverse_iterator rit = test_iterator.rbegin();
 	std::cout << "*rit = " << *rit << std::endl;
 	std::cout << "*++rit = " << *++rit << std::endl;
 	std::cout << "*rit++ = " << *rit++ << " then *rit is : " << *rit << std::endl;
@@ -409,7 +407,7 @@ void test_vector_comparison(void) {
 	std::cout << std::endl << "Tests for \033[31;1;4mcomparison operators:\033[0m: " << std::endl;
 
 	std::cout << "Let's create two same vectors of char with 'a', 'b', 'c', 'd':" << std::endl;
-	ft::vector<char> test_comparison1, test_comparison2;
+	NAMESPACE::vector<char> test_comparison1, test_comparison2;
 	test_comparison1.push_back('a');
 	test_comparison1.push_back('b');
 	test_comparison1.push_back('c');
@@ -457,7 +455,7 @@ void test_vector_swap(void) {
 	std::cout << std::endl << "Tests for \033[31;1;4mswap()\033[0m: " << std::endl;
 
 	std::cout << "Let's create two int vectors : 1/ 12, 21, 42 - 2/ 4 8 15 16 23 42" << std::endl;
-	ft::vector<int> test_swap1, test_swap2;
+	NAMESPACE::vector<int> test_swap1, test_swap2;
 	test_swap1.push_back(12);
 	test_swap1.push_back(21);
 	test_swap1.push_back(42);

@@ -1,6 +1,13 @@
 #ifndef COMMON_HPP
 # define COMMON_HPP
 
+#include <map>
+#include <stack>
+#include <vector>
+#include <list>
+
+#define NAMESPACE ft 
+
 #include "../includes/condition.hpp"
 #include "../includes/iterator.hpp"
 #include "../includes/iterator_map.hpp"
