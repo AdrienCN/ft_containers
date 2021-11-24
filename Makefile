@@ -1,8 +1,8 @@
 SRCS		= main_test.cpp \
 			  test_vector.cpp \
 			  test_stack.cpp \
-			  test_map.cpp \
-			  common.cpp 
+			  test_map.cpp  \
+			  common.cpp
 		  
 OBJS		= $(addprefix test/, $(SRCS:.cpp=.o))
 
