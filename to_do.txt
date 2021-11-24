@@ -1,5 +1,28 @@
 Definir:
 
+savoir expliquer : 
+
+-Namespace
+-Template
+-friend
+-enable if
+-lexicographical compare
+-explicit
+-virtual
+
+
+
+Verifier : 
+--> chaque fonction
+--> Si fonction a des execptions
+
+
+
+
+
+
+
+
 _Namespace:
 
 
