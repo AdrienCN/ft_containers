@@ -9,6 +9,7 @@
 
 #define GREEN "\033[0;32m" 
 #define RED "\033[0;31m" 
+#define YLW "\033[0;33m" 
 #define RESET "\033[0;00m" 
 //std::less
 #include <functional>
@@ -329,10 +330,13 @@ namespace ft
 					node *needle = _findVal(_root, val);
 					if (needle)
 					{
+				//		std::cout << RED << "Erasing : key[" << val.first << "]" << RESET << std::endl;
 						_root = this->_myErase(_root, val);
 						this->_updatePosition();
 						if (_size > 0)
 							_size -= 1;
+					//	std::cout << "\t*********#####__adrien__#####**********" << std::endl;
+					//	this->_printTest(_root);
 						return (1);
 					}
 					else
@@ -341,12 +345,36 @@ namespace ft
 
 				void erase (iterator first, iterator second)
 				{
+
+					iterator next;
 					while (first != second)
 					{
+						next = first;
+						next++;
 						this->erase(first->first);
-						first++;
+						first = next;
 					}
 				}
+
+				/*	
+					int count = 0;
+					for (iterator it = first; it != second; it++)
+					{
+						count++;
+					}
+					int i = 0;
+					iterator next;
+					while (i < count)
+					{
+				//		std::cout << "count (" << count << ") | i = " << i << std::endl;
+						next = first;
+						next++;
+						this->erase(first->first);
+						first = next;
+						i++;
+					}
+				}
+*/
 
 
 				void swap(map & x)
@@ -624,35 +652,45 @@ namespace ft
 
 		node* _myErase(node *subroot, const value_type &val)
 		{
-			if (subroot == NULL)
+			if (subroot == NULL || subroot == _preRoot || subroot == _end)
 				return (NULL);
 
 			key_type new_key = val.first;
 			key_type subroot_key = subroot->pr.first;
-
-
-			if (_comp(new_key, subroot_key) == true)
-				subroot->left = this->_myErase(subroot->left, val);
-			else if (_comp(new_key, subroot_key) == false)
-				subroot->right = this->_myErase(subroot->right, val); 
-			else
+		//	std::cout << YLW << "new_key = " << new_key << " | subroot_key = " << subroot_key <<  RESET << std::endl;
+			if (new_key == subroot_key)
 			{
+		//		std::cout << GREEN << "here" <<  RESET << std::endl;
 				node *tmp = NULL;
 				//Un fils ou aucun fils
-				if (subroot->right == NULL || subroot->left == NULL)
+				if ((subroot->right == NULL || subroot->right == _end) || subroot->left == NULL)
 				{
 					tmp = subroot;
 					//leaf case
-					if (subroot->right == NULL && subroot->left == NULL)
+					if ((subroot->right == NULL && subroot->left == NULL) || (subroot->left == NULL && subroot->right == _end))
+					{
+			//			std::cout << GREEN << "leaf case" <<  RESET << std::endl;
 						subroot = NULL;
+					}
 					else
-						subroot = subroot->right ? subroot->right : subroot->left;
+					{
+			//			std::cout << GREEN << "one sons" <<  RESET << std::endl;
+						if (subroot->right == NULL || subroot->right->pr == _end->pr)
+							subroot = subroot->left;
+						else
+							subroot = subroot->right;
+						//subroot = subroot->right ? subroot->right : subroot->left;
+						subroot->parent = tmp->parent;
+					}
+			//		std::cout << RED << "leaf deleted (" << tmp->pr.first << ") ("<<tmp->pr.second << ") "  << RESET << std::endl;
 					_freeNode(tmp); // old subroot
+
 				}
 				//deux fils
 				else
 				{
-
+				//	std::cout << GREEN << "subroot (" << subroot->pr.first << ")("<< subroot->pr.second << ") has Two sons : " <<  RESET << std::endl;
+					//this->_printNode(subroot);
 					node *successor = this->_findMinChild(subroot->right);
 
 					node *tmp = _newNode(successor->pr);
@@ -674,40 +712,69 @@ namespace ft
 						exit(5);
 					}
 					//Etapte 3 kill subroot
+				//	std::cout << RED << "subroot deleted (" << subroot->pr.first << ") ("<< subroot->pr.second << ") "  << RESET << std::endl;
 					_freeNode(subroot);
 
 					//Etape 4 fait pointer subroot sur le remplacant
 					subroot = tmp;
 
 					//kill my child
-					subroot = this->_myErase(subroot->right, subroot->pr);
+				//	std::cout << "Tree before erasing : " << std::endl;
+				//	for (iterator it = this->begin(); it != this->end(); it++)
+				//		this->_printNode(it);
+			//		std::cout << RED << "in_ft_erasing : key[" << subroot->pr.first << "]" << RESET << std::endl;
+					subroot->right = this->_myErase(subroot->right, subroot->pr);
 				}
 			}
+			else if (_comp(new_key, subroot_key) == true)
+				subroot->left = this->_myErase(subroot->left, val);
+			else
+				subroot->right = this->_myErase(subroot->right, val); 
+			
 			//Si je n'existe pas je peux pas me balancer
 			if (subroot == NULL)
 				return (subroot);
 			//calcul sa nouvelle hauteur
+		//	std::cout << YLW << "balancing node (" << subroot->pr.first << ")("<< subroot->pr.second << ")"  << RESET << std::endl;
 			subroot->height = _getHeight(subroot);
 			int balance = _isBalanced(subroot);
 
 			if (balance < -1 || balance > 1)
 				subroot = this->_doEraseRotation(subroot, balance);
+		//	std::cout << "Tree before returning: " << std::endl;
+		//			for (iterator it = this->begin(); it != this->end(); it++)
+		//				this->_printNode(it);
+
 			return (subroot);
 		}
 
 		node* _doEraseRotation(node* node, int balance)
 		{
+	/*		if (balance > 1)
+				std::cout <<  RED << "left branch heavy : ";
+			else
+				std::cout <<  RED << "right branch heavy : ";
+*/
 			if (balance > 1 && _isBalanced(node->left) >= 0)
+			{
+//				std::cout <<  RED << "LL case : " << RESET << std::endl;
 				return this->_rightRotate(node);
+			}
 			if (balance > 1 && _isBalanced(node->left) < 0)
 			{
+//				std::cout <<  RED << "LR case : " << RESET << std::endl;
 				node->left = this->_leftRotate(node->left);
 				return this->_rightRotate(node);
 			}
 			if (balance < -1 &&	_isBalanced(node->right) <= 0)
+			{
+//				std::cout <<  RED << "RR case : left_rot of node : " << node->pr.first << RESET << std::endl;
 				return this->_leftRotate(node);
+			
+			}
 			if (balance < -1 &&	_isBalanced(node->right) > 0)
 			{
+//				std::cout <<  RED << "RL case : " << RESET << std::endl;
 				node->right = this->_rightRotate(node->right);
 				return this->_leftRotate(node);
 			}
@@ -961,30 +1028,46 @@ namespace ft
 		void	_printTest(node *root)
 		{
 			if (root == NULL)
-			{
-				std::cout << " NULL\n";
 				return;
-			}
-			else if (root->pr== _end->pr)
+			else if (root->pr == _end->pr)
 			{
-				std::cout << "(END_NODE)" << std::endl;
+				std::cout << "Node id [END_NODE]" << std::endl;
 				return;
 			}
 			//	if (root == _root && root->is_init)
-			std::cout << "Node (" << root->pr.first << ")" << std::endl;
+			std::cout << "Node id [" << root->pr.first << "]" << std::endl;
 			std::cout << "-Parent : ";
 			if (root->parent == _preRoot)
 				std::cout << " (PREROOT_NODE) " << std::endl;
 			else
 				std::cout << root->parent->pr.first << std::endl;
+
+			std::cout << "-Left : ";
 			if (root->left)
-				std::cout << "-Left (" << root->left->pr.first << ")" << std::endl;
-			if (root->right && root->right != _end)
-				std::cout << "-Right (" << root->right->pr.first << ")" << std::endl;
+				std::cout << "(" << root->left->pr.first << ")" << std::endl;
+			else
+				std::cout << "(NULL)" << std::endl;
+			
+			std::cout << "-Right : "; 
+			if (root->right && root->right->pr != _end->pr)
+				std::cout << "(" << root->right->pr.first << ")" << std::endl;
+			else if (root->right == NULL)
+				std::cout << "(NULL)" << std::endl;
+			else
+				std::cout << "(END_NODE)" << std::endl;
 			//std::cout << "left branch : ";
-			_printTest(root->left);
+			std::cout << "\t***" << std::endl;
+			if (root->left)
+			{
+				std::cout << "--*--*-->left id.[" << root->pr.first << "]" << std::endl;
+				_printTest(root->left);
+			}
 			//std::cout << "right branch : ";
-			_printTest(root->right);
+			if (root->right)
+			{
+				std::cout << "--*--*-->right id.[" << root->pr.first << "]" << std::endl;
+				_printTest(root->right);
+			}
 			return;
 		}
 
