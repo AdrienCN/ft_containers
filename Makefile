@@ -1,4 +1,4 @@
-#My_own_tester : for function testing
+#My_tester : for function testing
 #SRCS		= main_test.cpp \
 			  test_vector.cpp \
 			  test_stack.cpp \
@@ -37,7 +37,7 @@ HPP = $(addprefix include/, $(CNTR_FILES))
 
 CXX			= clang++
 
-CXXFLAGS	= -Wall -Wextra -Werror -g3 -std=c++98 -fsanitize=address
+CXXFLAGS	= -Wall -Wextra -Werror -g3 -std=c++98 #-fsanitize=address
 
 
 NAME = ft_containers

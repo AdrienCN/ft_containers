@@ -62,7 +62,6 @@ namespace ft
 				node*				_root; // root node
 				node*				_end; //EMPTY right child of the most right node ---->  end
 				node*				_preRoot; // PREroot node ---> rend
-				//	node*				_maxChild;
 				key_compare			_comp;
 				allocator_type		_allocator;
 				allocator_type_node	_allocator_node;
@@ -74,7 +73,7 @@ namespace ft
 				//Constructor
 				explicit map (const key_compare& comp = key_compare(),
 						const allocator_type& alloc = allocator_type())
-					: _root(_newNode()),_end(_newNode()), _preRoot(_newNode()),/* _maxChild(_root), */ _comp(comp), _allocator(alloc), _size(0) 
+					: _root(_newNode()),_end(_newNode()), _preRoot(_newNode()),_comp(comp), _allocator(alloc), _size(0) 
 				{
 					// begin <-- root R-->end
 					_root->parent = _preRoot; 
@@ -96,7 +95,7 @@ namespace ft
 				template <class InputIterator>
 					map (InputIterator first, InputIterator last,
 							const key_compare& comp = key_compare(),
-							const allocator_type& alloc = allocator_type()) :_root(_newNode()), _end(_newNode()), _preRoot(_newNode()),/* _maxChild(_root), */_comp(comp), _allocator(alloc), _size(0)
+							const allocator_type& alloc = allocator_type()) :_root(_newNode()), _end(_newNode()), _preRoot(_newNode()), _comp(comp), _allocator(alloc), _size(0)
 			{
 				_root->parent = _preRoot; 
 				_root->right = _end;
@@ -114,15 +113,13 @@ namespace ft
 				_end->is_end = true;
 				while (first != last)
 				{
-		//			std::cout << "inserting : " <<  first->first << std::endl;
 					this->insert(*first);
 					++first;
 				}
-		//		this->_printFromRoot(_root);
 
 			}
 
-				map (const map& x) : _root(_newNode()), _end(_newNode()), _preRoot(_newNode()), /*_maxChild(_root),*/ _comp(x._comp), _allocator(x._allocator), _size(x._size)
+				map (const map& x) : _root(_newNode()), _end(_newNode()), _preRoot(_newNode()), _comp(x._comp), _allocator(x._allocator), _size(x._size)
 			{
 				_root->parent = _preRoot; 
 				_root->right = _end;
@@ -138,26 +135,8 @@ namespace ft
 				_end->right = NULL;
 				_end->left = NULL;
 				_end->is_end = true;
-		//		_printFromRoot(x._root);
 				_root = this->_metamorph(_root, _root, x._root);
 				_updatePosition();
-		//		std::cout << "My tree as result of mp(x)" << std::endl;
-		//		_printFromRoot(_root);
-
-				/*
-				   int i = 0;
-				   for (const_iterator it = x.begin(); it != x.end(); it++)
-				   {
-				   if (_root->is_init == false && _root->left == NULL && (_root->right == NULL || _root->right == _end))
-				   _root = _initTree(_root, *it);
-				   else
-				   _root = this->_myInsert(_root, _root, *it);
-				   this->_updatePosition();
-				   this->_size += 1;
-				   std::cout << "i = " << i << std::endl;
-				   i++;
-				   }
-				   */
 			}
 
 				map & operator=(const map& x)
@@ -306,7 +285,6 @@ namespace ft
 					if (needle)
 					{
 						_root = this->_myErase(_root, val);
-						//_maxChild = _findMaxChild(_root);
 						this->_updatePosition();
 						if (_size > 0)
 							_size -= 1;
@@ -488,18 +466,14 @@ namespace ft
 					else if (src->is_end == true)
 						return (_end);
 					//creer le noeud
-		//			std::cout << "metamorph : " << src->pr.first << std::endl;
 					node *new_node;
 					if (root == _root && _root->is_init == false)
 					{
-		//				std::cout << "root =  : " << src->pr.first << std::endl;
 						new_node =_initTree(root, src->pr);
 					}
 					else
 						new_node = _newNode(parent, src->pr);
-		//			std::cout << "--->Left :" << new_node->pr.first << std::endl;
 					new_node->left = _metamorph(new_node, new_node->left, src->left);
-		//			std::cout << "---->Right :" <<  new_node->pr.first << std::endl;
 					new_node->right = _metamorph(new_node, new_node->right, src->right);
 					return (new_node);
 				}
@@ -524,13 +498,9 @@ namespace ft
 						max_child = _root;
 					}
 					else
-						//	max_child = _maxChild;
 						max_child = _findMaxChild(_root);
-					//suite a un clear par exemple ?
 					if (_end == NULL)
-					{
 						_end = _newNode();
-					}
 
 					_preRoot->right = _root;
 					_preRoot->left = _root;
@@ -686,14 +656,12 @@ namespace ft
 						return (subroot);
 
 					//calculer la nouvelle height
-					subroot->height = max(_getHeight(subroot->right), _getHeight(subroot->left)) + 1;
+					subroot->height = _max(_getHeight(subroot->right), _getHeight(subroot->left)) + 1;
 
 					//balancer l'arbre apres l'insertion
 					int balance = _isBalanced(subroot);
 
 					//Tree is NOT balanced
-					//std::cout << "** Node id (" << subroot->pr.first << ") " ;
-					//std::cout << "balance = " << balance << "**" << std::endl;
 					if (balance < -1 || balance > 1)
 						subroot = this->_doRotation(subroot, val, balance);
 					return (subroot); // Subtree is balanced return unchanged subroot
@@ -740,28 +708,7 @@ namespace ft
 					return (_getHeight(node->left) - _getHeight(node->right));
 				}
 
-				/*	
-					size_t right = _getHeight(node->right);
-					size_t left = _getHeight(node->left);
-					if (node->left)
-					left = node->left->height;
-					else
-					left = 0;
-					if (node->right && node->right != _end)
-					right = node->right->height;
-					else
-					right = 0;
-					int res = right - left;
-					std::cout << " right= " << right <<  std::endl;
-					std::cout << " left = " << left <<  std::endl;
-					std::cout << " res = " << res <<  std::endl;
-					return (res);
-				//	return (node->left->height - node->right->height);
-				//return (_getHeight(node->left) - _getHeight(node->right));
-				}
-				*/
-
-				size_t max(int a, int b)
+				size_t _max(int a, int b)
 				{
 					return ((a > b) ? a : b);
 				}
@@ -785,9 +732,9 @@ namespace ft
 					if (z)
 						z->parent = y;
 
-					y->height = max(_getHeight(y->left),
+					y->height = _max(_getHeight(y->left),
 							_getHeight(y->right)) + 1;
-					x->height = max(_getHeight(x->left),
+					x->height = _max(_getHeight(x->left),
 							_getHeight(x->right)) + 1;
 					return (x);
 				}
@@ -804,9 +751,9 @@ namespace ft
 					if (z)
 						z->parent = y;
 
-					y->height = max(_getHeight(y->left),
+					y->height = _max(_getHeight(y->left),
 							_getHeight(y->right)) + 1;
-					x->height = max(_getHeight(x->left),
+					x->height = _max(_getHeight(x->left),
 							_getHeight(x->right)) + 1;
 
 					return (x);
@@ -876,7 +823,7 @@ namespace ft
 				}
 
 				//Fonction d'impression si besoin durant la correction
-
+				/*
 				void	_printFromRoot(node *root)
 				{
 					if (root == NULL)
@@ -917,7 +864,7 @@ namespace ft
 					}
 					return;
 				}
-				/*
+			
 				void	_printNode(node *toprint)
 				{	
 					std::cout << "Parent (" << toprint->parent->pr.first << ") <--";
@@ -972,8 +919,8 @@ namespace ft
 					std::cout << std::endl;
 				}
 				*/
-					//fin de class map
-};
+					//Fin de class map
+		};
 	template< class Key, class T, class Compare, class Alloc >
 bool operator==(const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs) 
 {
