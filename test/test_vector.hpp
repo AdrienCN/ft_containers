@@ -1,7 +1,6 @@
 #ifndef TEST_VECTOR_HPP
 # define TEST_VECTOR_HPP
 # include "common.hpp"
-# include "../includes/vector.hpp"
 # include <string>
 # include <iostream>
 

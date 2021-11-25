@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 					std::cout << "Error fatal : gettimeofday failed" << std::endl;
 					return (1);
 				}
-				unsigned long long duration = (start.tv_sec * 1000000 + end.tv_usec)- (start.tv_sec * 1000000 + start.tv_usec);
+				unsigned long long duration = (end.tv_sec * 1000000 + end.tv_usec)- (start.tv_sec * 1000000 + start.tv_usec);
 				std::cout << BGRN << "\tTimecount : " << duration << " micro_seconds" << RESET << std::endl;
 				return 0;
 			}

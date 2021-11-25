@@ -1,12 +1,19 @@
+#My_own_tester : for function testing
 SRCS		= main_test.cpp \
 			  test_vector.cpp \
 			  test_stack.cpp \
 			  test_map.cpp  \
 			  common.cpp
-		  
+
 OBJS		= $(addprefix test/, $(SRCS:.cpp=.o))
 
-HEADER		= -I includes
+
+#42_tester : for execution time
+#SRCS 		= main.cpp
+
+#OBJS		= $(SRCS:.cpp=.o)
+
+HEADER		= -I include
 
 CNTR_FILES = condition.hpp			\
 			 iterator_map.hpp		\
@@ -26,7 +33,7 @@ TEST_FILES = common.hpp \
 
 TEST_HPP = $(addprefix test/, $(TEST_FILES))
 
-HPP = $(addprefix includes/, $(CNTR_FILES))
+HPP = $(addprefix include/, $(CNTR_FILES))
 
 CXX			= clang++
 
@@ -35,10 +42,10 @@ CXXFLAGS	= -Wall -Wextra -Werror -g3 -std=c++98
 
 NAME = ft_containers
 
-.cpp.o: $(HPP) $(TEST_HPP) 
+.cpp.o: $(HPP) # $(TEST_HPP) 
 	$(CXX) $(CXXFLAGS) $(HEADER) -c $< -o $(<:.cpp=.o)
 
-$(NAME): $(OBJS) $(HPP) $(TEST_HPP)
+$(NAME): $(OBJS) $(HPP) #$(TEST_HPP)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
 
 all :$(NAME)

@@ -62,6 +62,7 @@ namespace ft
 				node*				_root; // root node
 				node*				_end; //EMPTY right child of the most right node ---->  end
 				node*				_preRoot; // PREroot node ---> rend
+				//	node*				_maxChild;
 				key_compare			_comp;
 				allocator_type		_allocator;
 				allocator_type_node	_allocator_node;
@@ -73,7 +74,7 @@ namespace ft
 				//Constructor
 				explicit map (const key_compare& comp = key_compare(),
 						const allocator_type& alloc = allocator_type())
-					: _root(_newNode()),_end(_newNode()), _preRoot(_newNode()), _comp(comp), _allocator(alloc), _size(0) 
+					: _root(_newNode()),_end(_newNode()), _preRoot(_newNode()),/* _maxChild(_root), */ _comp(comp), _allocator(alloc), _size(0) 
 				{
 					// begin <-- root R-->end
 					_root->parent = _preRoot; 
@@ -95,7 +96,7 @@ namespace ft
 				template <class InputIterator>
 					map (InputIterator first, InputIterator last,
 							const key_compare& comp = key_compare(),
-							const allocator_type& alloc = allocator_type()) :_root(_newNode()), _end(_newNode()), _preRoot(_newNode()), _comp(comp), _allocator(alloc), _size(0)
+							const allocator_type& alloc = allocator_type()) :_root(_newNode()), _end(_newNode()), _preRoot(_newNode()),/* _maxChild(_root), */_comp(comp), _allocator(alloc), _size(0)
 			{
 				_root->parent = _preRoot; 
 				_root->right = _end;
@@ -113,13 +114,15 @@ namespace ft
 				_end->is_end = true;
 				while (first != last)
 				{
+		//			std::cout << "inserting : " <<  first->first << std::endl;
 					this->insert(*first);
-					first++;
+					++first;
 				}
+		//		this->_printFromRoot(_root);
 
 			}
 
-				map (const map& x) : _root(_newNode()), _end(_newNode()), _preRoot(_newNode()), _comp(x._comp), _allocator(x._allocator), _size(0)
+				map (const map& x) : _root(_newNode()), _end(_newNode()), _preRoot(_newNode()), /*_maxChild(_root),*/ _comp(x._comp), _allocator(x._allocator), _size(x._size)
 			{
 				_root->parent = _preRoot; 
 				_root->right = _end;
@@ -135,9 +138,26 @@ namespace ft
 				_end->right = NULL;
 				_end->left = NULL;
 				_end->is_end = true;
+		//		_printFromRoot(x._root);
+				_root = this->_metamorph(_root, _root, x._root);
+				_updatePosition();
+		//		std::cout << "My tree as result of mp(x)" << std::endl;
+		//		_printFromRoot(_root);
 
-				for (const_iterator it = x.begin(); it != x.end(); it++)
-					this->insert(*it);
+				/*
+				   int i = 0;
+				   for (const_iterator it = x.begin(); it != x.end(); it++)
+				   {
+				   if (_root->is_init == false && _root->left == NULL && (_root->right == NULL || _root->right == _end))
+				   _root = _initTree(_root, *it);
+				   else
+				   _root = this->_myInsert(_root, _root, *it);
+				   this->_updatePosition();
+				   this->_size += 1;
+				   std::cout << "i = " << i << std::endl;
+				   i++;
+				   }
+				   */
 			}
 
 				map & operator=(const map& x)
@@ -286,6 +306,7 @@ namespace ft
 					if (needle)
 					{
 						_root = this->_myErase(_root, val);
+						//_maxChild = _findMaxChild(_root);
 						this->_updatePosition();
 						if (_size > 0)
 							_size -= 1;
@@ -460,6 +481,29 @@ namespace ft
 
 			private :
 
+				node* _metamorph(node *parent, node *root, node *src)
+				{
+					if (src == NULL)
+						return (NULL);
+					else if (src->is_end == true)
+						return (_end);
+					//creer le noeud
+		//			std::cout << "metamorph : " << src->pr.first << std::endl;
+					node *new_node;
+					if (root == _root && _root->is_init == false)
+					{
+		//				std::cout << "root =  : " << src->pr.first << std::endl;
+						new_node =_initTree(root, src->pr);
+					}
+					else
+						new_node = _newNode(parent, src->pr);
+		//			std::cout << "--->Left :" << new_node->pr.first << std::endl;
+					new_node->left = _metamorph(new_node, new_node->left, src->left);
+		//			std::cout << "---->Right :" <<  new_node->pr.first << std::endl;
+					new_node->right = _metamorph(new_node, new_node->right, src->right);
+					return (new_node);
+				}
+
 				void	_deletePostOrder(node *root)
 				{
 					if (root == NULL || root == _end)
@@ -468,7 +512,6 @@ namespace ft
 					this->_deletePostOrder(root->right);
 					_freeNode(root);
 				}
-
 
 				void	_updatePosition(void)
 				{
@@ -481,6 +524,7 @@ namespace ft
 						max_child = _root;
 					}
 					else
+						//	max_child = _maxChild;
 						max_child = _findMaxChild(_root);
 					//suite a un clear par exemple ?
 					if (_end == NULL)
@@ -622,12 +666,15 @@ namespace ft
 				{
 
 					if (subroot == NULL || subroot == _end) 
-						return (_newNode(parent, val));
-					
+					{
+						node *ret = _newNode(parent, val);
+						return (ret);
+					}
+
 					key_type new_key = val.first;
 					key_type subroot_key = subroot->pr.first;
 					parent = subroot;
-					
+
 					// new_key < subroot_key. Insertion gauche
 					if (_comp(new_key, subroot_key) == true)
 						subroot->left = this->_myInsert(subroot->left, parent, val);
@@ -639,12 +686,14 @@ namespace ft
 						return (subroot);
 
 					//calculer la nouvelle height
-					subroot->height = _getHeight(subroot);
+					subroot->height = max(_getHeight(subroot->right), _getHeight(subroot->left)) + 1;
 
 					//balancer l'arbre apres l'insertion
 					int balance = _isBalanced(subroot);
 
 					//Tree is NOT balanced
+					//std::cout << "** Node id (" << subroot->pr.first << ") " ;
+					//std::cout << "balance = " << balance << "**" << std::endl;
 					if (balance < -1 || balance > 1)
 						subroot = this->_doRotation(subroot, val, balance);
 					return (subroot); // Subtree is balanced return unchanged subroot
@@ -686,18 +735,42 @@ namespace ft
 
 				int _isBalanced(node *node)
 				{
+					if (node == NULL || node == _end)
+						return (0);
 					return (_getHeight(node->left) - _getHeight(node->right));
 				}
 
+				/*	
+					size_t right = _getHeight(node->right);
+					size_t left = _getHeight(node->left);
+					if (node->left)
+					left = node->left->height;
+					else
+					left = 0;
+					if (node->right && node->right != _end)
+					right = node->right->height;
+					else
+					right = 0;
+					int res = right - left;
+					std::cout << " right= " << right <<  std::endl;
+					std::cout << " left = " << left <<  std::endl;
+					std::cout << " res = " << res <<  std::endl;
+					return (res);
+				//	return (node->left->height - node->right->height);
+				//return (_getHeight(node->left) - _getHeight(node->right));
+				}
+				*/
+
+				size_t max(int a, int b)
+				{
+					return ((a > b) ? a : b);
+				}
 
 				size_t _getHeight(node *node)
 				{
 					if (node == NULL || node == _end)
 						return (0);
-					size_t right = _getHeight(node->right);
-					size_t left = _getHeight(node->left);
-
-					return ((right > left ? right : left) + 1);
+					return (node->height);
 				}
 
 				node* _rightRotate(node *y)
@@ -708,9 +781,14 @@ namespace ft
 					y->parent = x;
 					x->right = y;
 					y->left = z;
-					
+
 					if (z)
 						z->parent = y;
+
+					y->height = max(_getHeight(y->left),
+							_getHeight(y->right)) + 1;
+					x->height = max(_getHeight(x->left),
+							_getHeight(x->right)) + 1;
 					return (x);
 				}
 
@@ -725,6 +803,12 @@ namespace ft
 					y->right = z;
 					if (z)
 						z->parent = y;
+
+					y->height = max(_getHeight(y->left),
+							_getHeight(y->right)) + 1;
+					x->height = max(_getHeight(x->left),
+							_getHeight(x->right)) + 1;
+
 					return (x);
 				}
 
@@ -792,7 +876,7 @@ namespace ft
 				}
 
 				//Fonction d'impression si besoin durant la correction
-				/*
+
 				void	_printFromRoot(node *root)
 				{
 					if (root == NULL)
@@ -825,14 +909,15 @@ namespace ft
 						std::cout << "(END_NODE)" << std::endl;
 					if (root->left)
 					{
-						_printTest(root->left);
+						_printFromRoot(root->left);
 					}
 					if (root->right)
 					{
-						_printTest(root->right);
+						_printFromRoot(root->right);
 					}
 					return;
 				}
+				/*
 				void	_printNode(node *toprint)
 				{	
 					std::cout << "Parent (" << toprint->parent->pr.first << ") <--";
@@ -887,55 +972,55 @@ namespace ft
 					std::cout << std::endl;
 				}
 				*/
-				//fin de class map
-		};
+					//fin de class map
+};
 	template< class Key, class T, class Compare, class Alloc >
-		bool operator==(const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs) 
-		{
-			if (lhs.size() != rhs.size()) {
-				return false;
-			}
-			return ft::equal(lhs.begin(), lhs.end(), rhs.begin());
-		}
+bool operator==(const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs) 
+{
+	if (lhs.size() != rhs.size()) {
+		return false;
+	}
+	return ft::equal(lhs.begin(), lhs.end(), rhs.begin());
+}
 
 	template< class Key, class T, class Compare, class Alloc >
-		bool operator!=(ft::map<Key,T,Compare,Alloc> const& lhs, ft::map<Key,T,Compare,Alloc> const& rhs)
-		{
-			return !(lhs == rhs);
-		}
+bool operator!=(ft::map<Key,T,Compare,Alloc> const& lhs, ft::map<Key,T,Compare,Alloc> const& rhs)
+{
+	return !(lhs == rhs);
+}
 
 	template< class Key, class T, class Compare, class Alloc >
-		bool operator<(ft::map<Key,T,Compare,Alloc> const& lhs, ft::map<Key,T,Compare,Alloc> const& rhs)
-		{
-			return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
-		}
+bool operator<(ft::map<Key,T,Compare,Alloc> const& lhs, ft::map<Key,T,Compare,Alloc> const& rhs)
+{
+	return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+}
 
 	template< class Key, class T, class Compare, class Alloc >
-		bool operator<=(ft::map<Key,T,Compare,Alloc> const& lhs, ft::map<Key,T,Compare,Alloc> const& rhs)
-		{
-			return !(rhs < lhs);
-		}
+bool operator<=(ft::map<Key,T,Compare,Alloc> const& lhs, ft::map<Key,T,Compare,Alloc> const& rhs)
+{
+	return !(rhs < lhs);
+}
 
 	template< class Key, class T, class Compare, class Alloc >
-		bool operator>(ft::map<Key,T,Compare,Alloc> const& lhs, ft::map<Key,T,Compare,Alloc> const& rhs)
-		{
-			return rhs < lhs;
-		}
+bool operator>(ft::map<Key,T,Compare,Alloc> const& lhs, ft::map<Key,T,Compare,Alloc> const& rhs)
+{
+	return rhs < lhs;
+}
 
 	template< class Key, class T, class Compare, class Alloc >
-		bool operator>=(ft::map<Key,T,Compare,Alloc> const& lhs, ft::map<Key,T,Compare,Alloc> const& rhs)
-		{
-			return !(lhs < rhs);
-		}
+bool operator>=(ft::map<Key,T,Compare,Alloc> const& lhs, ft::map<Key,T,Compare,Alloc> const& rhs)
+{
+	return !(lhs < rhs);
+}
 
-	// --> Swap of vectors
+// --> Swap of vectors
 
 	template< class Key, class T, class Compare, class Alloc >
-		void swap(ft::map<Key,T,Compare,Alloc>& lhs, ft::map<Key,T,Compare,Alloc>& rhs)
-		{
-			lhs.swap(rhs);
-			return;
-		}
-	//end of ft namespace
+void swap(ft::map<Key,T,Compare,Alloc>& lhs, ft::map<Key,T,Compare,Alloc>& rhs)
+{
+	lhs.swap(rhs);
+	return;
+}
+//end of ft namespace
 };
 #endif

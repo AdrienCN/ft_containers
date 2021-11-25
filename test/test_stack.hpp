@@ -1,7 +1,5 @@
 #ifndef TEST_STACK_HPP
 # define TEST_STACK_HPP
-# include "../includes/stack.hpp"
-# include "../includes/vector.hpp"
 # include "common.hpp"
 
 void test_stack(void);
