@@ -1,17 +1,17 @@
 #My_tester : for function testing
-#SRCS		= main_test.cpp \
+SRCS		= main_test.cpp \
 			  test_vector.cpp \
 			  test_stack.cpp \
 			  test_map.cpp  \
 			  common.cpp
 
-#OBJS		= $(addprefix test/, $(SRCS:.cpp=.o))
+OBJS		= $(addprefix test/, $(SRCS:.cpp=.o))
 
 
 #42_tester : for execution time
-SRCS 		= 42_main.cpp
+#SRCS 		= 42_main.cpp
 
-OBJS		= $(SRCS:.cpp=.o)
+#OBJS		= $(SRCS:.cpp=.o)
 
 HEADER		= -I include
 

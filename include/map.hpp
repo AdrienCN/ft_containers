@@ -455,9 +455,7 @@ namespace ft
 					return this->_allocator;
 				}
 
-
-
-			private :
+							private :
 
 				node* _metamorph(node *parent, node *root, node *src)
 				{
@@ -823,8 +821,9 @@ namespace ft
 				}
 
 				//Fonction d'impression si besoin durant la correction
-				/*
-				void	_printFromRoot(node *root)
+
+		/*	
+			void	_printFromRoot(node *root)
 				{
 					if (root == NULL)
 						return;
@@ -864,8 +863,10 @@ namespace ft
 					}
 					return;
 				}
+
+	
 			
-				void	_printNode(node *toprint)
+			void	_printNode(node *toprint)
 				{	
 					std::cout << "Parent (" << toprint->parent->pr.first << ") <--";
 					std::cout << "Node id = ";
