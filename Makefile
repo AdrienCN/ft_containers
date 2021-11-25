@@ -1,17 +1,17 @@
 #My_own_tester : for function testing
-SRCS		= main_test.cpp \
+#SRCS		= main_test.cpp \
 			  test_vector.cpp \
 			  test_stack.cpp \
 			  test_map.cpp  \
 			  common.cpp
 
-OBJS		= $(addprefix test/, $(SRCS:.cpp=.o))
+#OBJS		= $(addprefix test/, $(SRCS:.cpp=.o))
 
 
 #42_tester : for execution time
-#SRCS 		= main.cpp
+SRCS 		= 42_main.cpp
 
-#OBJS		= $(SRCS:.cpp=.o)
+OBJS		= $(SRCS:.cpp=.o)
 
 HEADER		= -I include
 
@@ -37,7 +37,7 @@ HPP = $(addprefix include/, $(CNTR_FILES))
 
 CXX			= clang++
 
-CXXFLAGS	= -Wall -Wextra -Werror -g3 -std=c++98
+CXXFLAGS	= -Wall -Wextra -Werror -g3 -std=c++98 -fsanitize=address
 
 
 NAME = ft_containers

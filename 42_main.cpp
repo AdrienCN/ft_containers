@@ -2,13 +2,14 @@
 #include <string>
 #include <deque>
 #include <sys/time.h>
+
 /*
 	#include <map>
 	#include <stack>
 	#include <vector>
 	namespace ft = std;
-
 */
+
 #include "include/map.hpp"
 #include "include/stack.hpp"
 #include "include/vector.hpp"
@@ -113,11 +114,11 @@ int main(int argc, char** argv) {
 	}
 	std::cout << "should be constant with the same seed: " << sum << std::endl;
 
-	std::cout << "copy = map_int " << std::endl;
 
-	ft::map<int, int> copy = map_int;
+	{
+		ft::map<int, int> copy = map_int;
+	}
 
-	std::cout << "copy end" << std::endl;
 	MutantStack<char> iterable_stack;
 	for (char letter = 'a'; letter <= 'z'; letter++)
 		iterable_stack.push(letter);
@@ -132,11 +133,8 @@ int main(int argc, char** argv) {
 		std::cout << "Error fatal : gettimeofday failed" << std::endl;
 		return (1);
 	}
+	
 	unsigned long long duration = end.tv_sec - start.tv_sec;
 	std::cout << BGRN << "\tTimecount : " << duration << "seconds" << RESET << std::endl;
-	//unsigned long long duration = (start.tv_sec * 1000 + start.tv_usec / 1000)- (end.tv_sec * 1000 + end.tv_usec / 1000);
-	//std::cout << BGRN << "\tTimecount : " << duration << " mili_seconds" << RESET << std::endl;
-
-
 	return (0);
 }
