@@ -268,7 +268,6 @@ namespace ft
 					{
 						while (first != last)
 						{
-					//	std::cout << "C) erasing : (" << first->first << ")(" << first->second << ")"  << std::endl;
 							this->insert(*first);
 							++first;
 						}
@@ -302,25 +301,59 @@ namespace ft
 				void erase (iterator first, iterator second)
 				{
 				//	std::cout << "first : [" << first->first << "] -- second ["<< second->first << "]" << std::endl;
+						key_type k_second = second->first;
+						while (first != second)
+						{
+							iterator next = first;
+							next++;
+							key_type k_next = next->first;
 
+							this->erase(first);
+							first = this->find(k_next);
+							second = this->find(k_second);
+						}
+						return ;
+				/*	
+					if (first == this->begin())
+					{
+						key_type k_second = second->first;
+						while (first != second)
+						{
+							iterator next = first;
+							next++;
+							key_type k_next = next->first;
 
-					key_type k = second->first;
-					while (first != second)
+							this->erase(first);
+							first = this->find(k_next);
+							second = this->find(k_second);
+						}
+					}
+					else
 					{
 
-					//	_printFromRoot(_root);
-					//	std::cout << "**1"  << std::endl;
-						iterator save = first;
-						save--;
-					//	std::cout << "2"  << std::endl;
-						//std::cout << "B) erasing : (" << delete_him->first << ")(" << delete_him->second << ")"  << std::endl;
-						this->erase(first);
-						save++;
-						first = save;
-						second = find(k);
-					//	std::cout << "3 first = [" << first->first << "] - [" << first->second << "]"  << std::endl;
-					//	std::cout << "erased**\n" << std::endl;
+						key_type k = second->first;
+						while (first != second)
+						{
+
+						//	_printFromRoot(_root);
+						//	std::cout << "**1"  << std::endl;
+							iterator save = first;
+							std::cout << "1. save = " << save->first << std::endl;
+							save--;
+							//std::cout << "2 save-- = " << save->first << std::endl;
+						//	std::cout << "2"  << std::endl;
+							//std::cout << "B) erasing : (" << delete_him->first << ")(" << delete_him->second << ")"  << std::endl;
+							this->erase(first);
+							std::cout << "3" << std::endl;
+							save++;
+							std::cout << "4" << std::endl;
+							first = save;
+							second = find(k);
+						//	std::cout << "3 first = [" << first->first << "] - [" << first->second << "]"  << std::endl;
+						//	std::cout << "erased**\n" << std::endl;
+						}
 					}
+					*/
 				}
 
 				void swap(map & x)
