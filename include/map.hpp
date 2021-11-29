@@ -268,8 +268,9 @@ namespace ft
 					{
 						while (first != last)
 						{
+					//	std::cout << "C) erasing : (" << first->first << ")(" << first->second << ")"  << std::endl;
 							this->insert(*first);
-							first++;
+							++first;
 						}
 					}
 
@@ -284,10 +285,14 @@ namespace ft
 					node *needle = _findVal(_root, val);
 					if (needle)
 					{
+					//	std::cout << "A) erasing : (" << needle->pr.first << ")(" << needle->pr.second << ")"  << std::endl;
 						_root = this->_myErase(_root, val);
 						this->_updatePosition();
 						if (_size > 0)
 							_size -= 1;
+					//	std::cout << "erased" << std::endl;
+					//	_printFromRoot(_root);
+					//	_printPos();
 						return (1);
 					}
 					else
@@ -296,14 +301,25 @@ namespace ft
 
 				void erase (iterator first, iterator second)
 				{
+				//	std::cout << "first : [" << first->first << "] -- second ["<< second->first << "]" << std::endl;
 
-					iterator next;
+
+					key_type k = second->first;
 					while (first != second)
 					{
-						next = first;
-						next++;
-						this->erase(first->first);
-						first = next;
+
+					//	_printFromRoot(_root);
+					//	std::cout << "**1"  << std::endl;
+						iterator save = first;
+						save--;
+					//	std::cout << "2"  << std::endl;
+						//std::cout << "B) erasing : (" << delete_him->first << ")(" << delete_him->second << ")"  << std::endl;
+						this->erase(first);
+						save++;
+						first = save;
+						second = find(k);
+					//	std::cout << "3 first = [" << first->first << "] - [" << first->second << "]"  << std::endl;
+					//	std::cout << "erased**\n" << std::endl;
 					}
 				}
 
@@ -455,7 +471,7 @@ namespace ft
 					return this->_allocator;
 				}
 
-							private :
+				private :
 
 				node* _metamorph(node *parent, node *root, node *src)
 				{
@@ -822,7 +838,6 @@ namespace ft
 
 				//Fonction d'impression si besoin durant la correction
 
-		/*	
 			void	_printFromRoot(node *root)
 				{
 					if (root == NULL)
@@ -833,26 +848,33 @@ namespace ft
 						return;
 					}
 					//	if (root == _root && root->is_init)
-					std::cout << "Node id [" << root->pr.first << "]" << std::endl;
+					std::cout << "\n**Node id [";
+					_printPair(root->pr);
+					std::cout << "]**" << std::endl;
+
 					std::cout << "-Parent : ";
 					if (root->parent == _preRoot)
-						std::cout << " (PREROOT_NODE) " << std::endl;
+						std::cout << " (PREROOT_NODE) ";
 					else
-						std::cout << root->parent->pr.first << std::endl;
+						_printPair(root->parent->pr);
+					std::cout << std::endl;
 
 					std::cout << "-Left : ";
 					if (root->left)
-						std::cout << "(" << root->left->pr.first << ")" << std::endl;
+						_printPair(root->left->pr);
 					else
-						std::cout << "(NULL)" << std::endl;
+						std::cout << "(NULL)";
+					std::cout << std::endl;
 
-					std::cout << "-Right : "; 
+					std::cout << "**-Right : "; 
 					if (root->right && root->right->pr != _end->pr)
-						std::cout << "(" << root->right->pr.first << ")" << std::endl;
+						_printPair(root->right->pr);
 					else if (root->right == NULL)
-						std::cout << "(NULL)" << std::endl;
+						std::cout << "(NULL)";
 					else
-						std::cout << "(END_NODE)" << std::endl;
+						std::cout << "(END_NODE)";
+					std::cout << "**"<< std::endl;
+					
 					if (root->left)
 					{
 						_printFromRoot(root->left);
@@ -863,6 +885,56 @@ namespace ft
 					}
 					return;
 				}
+
+				void _printPos()
+				{
+					std::cout << "\n\t[[___**POSITION**__]]" << std::endl;
+					std::cout << "_preRoot->left : ";
+					if (_preRoot->left)
+						_printPair(_preRoot->left->pr);
+					else
+						std::cout << "NULL";
+	
+					
+					std::cout << "_preRoot->right : ";
+					if (_preRoot->right)
+						_printPair(_preRoot->right->pr);
+					else
+						std::cout << "NULL";
+
+					
+					std::cout << "\nRoot->pr: ";
+					if (_root)
+						_printPair(_root->pr);
+					else
+						std::cout << "NULL";
+
+					std::cout << "\nRoot->left : ";
+					if (_root->left)
+						_printPair(_root->left->pr);
+					else
+						std::cout << "NULL";
+
+					std::cout << "\nRoot->right : ";
+					if (_root->right)
+						_printPair(_root->right->pr);
+					else
+						std::cout << "NULL";
+
+					std::cout << "\n_end parent: ";
+					if (_end->parent)
+						_printPair(_end->parent->pr);
+					else
+						std::cout << "NULL" << std::endl;
+					std::cout << "\n\t[[___**POSITION----------END**__]]" << std::endl;
+				}
+
+
+
+				void _printPair(value_type &pr)
+				{
+					std::cout << "(" << pr.first << ")-(" << pr.second << ")";
+				}	
 
 	
 			
@@ -919,7 +991,6 @@ namespace ft
 						std::cout << "(NULL)" << std::endl;
 					std::cout << std::endl;
 				}
-				*/
 					//Fin de class map
 		};
 	template< class Key, class T, class Compare, class Alloc >

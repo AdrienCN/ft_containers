@@ -7,7 +7,7 @@
 #include <list>
 
 //#define NAMESPACE ft 
-#define NAMESPACE std 
+//#define NAMESPACE std 
 
 #include "../include/condition.hpp"
 #include "../include/iterator.hpp"

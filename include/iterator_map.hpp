@@ -59,20 +59,53 @@ namespace ft
 			iterator_map & operator++()
 			{
 				node	*current = _ptr;
-				//Trouve la plus petite valeur de ma branche droite
-				if (!current || current->is_end == true)
-					return (*this);
 
+				if (!current)
+				{
+			//		std::cout << "!current" << std::endl;
+					return (*this);
+				}
+
+					
+				if (current->is_end == true)
+				{
+				//	std::cout << "_ptr == END" << std::endl;
+					return (*this);
+				}
+			/*	std::cout << "current->pr.first = : "<< current->pr.first << std::endl;
+				
+				std::cout << "current->left->pr.first = : ";
+				if (current->left)
+					std::cout << current->left->pr.first;
+				else
+					std::cout << "NULL";
+				std::cout << std::endl;
+
+				std::cout << "current->right->pr.first = : ";
+				if (current->right)
+					std::cout << current->right->pr.first;
+				else
+					std::cout << "NULL";
+				std::cout << std::endl;
+				*/
+				//Trouve la plus petite valeur de ma branche droite
 				if (current->right != NULL)
+				{
 					_ptr = findMinChild(current->right);
+				//	std::cout << "\t\t++ From [" << current->pr.first << "] to ["<< _ptr->pr.first << "]" << std::endl;
+				//	if (_ptr->is_end == true)
+				//		std::cout << "_ptr == END" << std::endl;
+				}
 				else
 				{
+				//	std::cout << "ici donc ? " << std::endl;
 
 					node	*parent = current->parent;
 					//Remonter l'arbre:
 					//Tant que j'ai un parent ET que je suis son fils droit
 					while (parent && parent->right == current)
 					{
+				//		std::cout << "\t\t++ From [" << current->pr.first << "] to ["<< parent->pr.first << "]" << std::endl;
 						current = parent;
 						parent = parent->parent;
 					}
@@ -129,7 +162,7 @@ namespace ft
 					if (subtree == NULL)
 						return (NULL);
 					node *current = subtree;
-					while (current->right && current->right)
+					while (current && current->right)
 						current = current->right;
 					return current;
 				}
@@ -187,9 +220,10 @@ namespace ft
 			const_iterator_map & operator++()
 			{
 				node	*current = _ptr;
-				//Trouve la plus petite valeur de ma branche droite
-				if (!current || current->is_end == true)
+				//si je suis end, ne pas aller plus loin
+				if (current->is_end == true)
 					return (*this);
+				//Trouve la plus petite valeur de ma branche droite
 				if (current->right != NULL)
 					_ptr = findMinChild(current->right);
 				else

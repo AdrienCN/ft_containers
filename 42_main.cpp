@@ -2,22 +2,25 @@
 #include <string>
 #include <deque>
 #include <sys/time.h>
-
+/*
 	#include <map>
 	#include <stack>
 	#include <vector>
 	namespace ft = std;
-/*
+	#define TEST "[STL]"
+*/
 #include "include/map.hpp"
 #include "include/stack.hpp"
 #include "include/vector.hpp"
-*/
+#define TEST "[ADRIEN]"
+
 
 #include <stdlib.h>
 
 #define MAX_RAM 4294967296
 #define BUFFER_SIZE 4096
 #define BGRN "\033[1;92m"
+#define BYLW "\033[1;93m"
 #define RESET "\033[0;00m"
 struct Buffer
 {
@@ -60,7 +63,8 @@ int main(int argc, char** argv) {
 		std::cout << "Error fatal : gettimeofday failed" << std::endl;
 		return (1);
 	}
-	
+
+	std::cout << BYLW << "Testing " << TEST << " container : " << RESET << std::endl;
 	const int seed = atoi(argv[1]);
 	srand(seed);
 
