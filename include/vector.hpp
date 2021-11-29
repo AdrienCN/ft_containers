@@ -209,7 +209,7 @@ namespace ft
 				{
 					if (n > this->max_size())
 						throw std::length_error("Exception : [reserve] : length > MAX_SIZE");
-					 if (n > _capacity)
+					if (n > _capacity)
 					{
 						pointer newarray;
 						newarray = _allocator.allocate(n);
@@ -321,59 +321,108 @@ namespace ft
 
 				void insert (iterator position , size_type n, const value_type &val)
 				{
+
+					difference_type elmt = position._ptr - this->_array;
+
 					if (n == 0)
 						return;
-					if (position == this->end())
-					{
-						for (size_type i = 0; i < n; i++)
-							this->push_back(val);
-						return;
-					}
-					size_type start = position._ptr - _array; 
-					size_type r_shift= _array + _size  - position._ptr; 
 					if (_size + n >= _capacity)
 						this->reserve(SPACE + n);
+
+					for(pointer it = this->_array + this->_size + n - 1, ite = this->_array + elmt + n - 1; it != ite; --it)
+					{
+						this->_allocator.construct(it, *(it - n));
+						this->_allocator.destroy(it - n);
+					}
+					this->_size += n;
+					while (n > 0)
+					{
+						this->_allocator.construct(this->_array + elmt - 1 + n, val);
+						n--;
+					}
+					return;
+
+					/*
+					   if (n == 0)
+					   return;
+					   if (position == this->end())
+					   {
+					   for (size_type i = 0; i < n; i++)
+					   this->push_back(val);
+					   return;
+					   }
+					   size_type start = position._ptr - _array; 
+					   size_type r_shift= _array + _size  - position._ptr; 
+					   if (_size + n >= _capacity)
+					   this->reserve(SPACE + n);
 					//repousse les elements vers la fin
 					for (size_type i = 0; i < r_shift; i++)
-						_allocator.construct(_array + (_size - 1 + n - i), *(_array + ( _size - 1 - i))); 
+					_allocator.construct(_array + (_size - 1 + n - i), *(_array + ( _size - 1 - i))); 
 					//insere les news elements
 					for (size_type i = 0; i < n; i++)
-						_array[start + i] = val;
+					_array[start + i] = val;
 					_size += n;
+					*/
 				}
 
 				template <typename InputIterator>
 					void insert (iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value, bool>::type = true)
 					{
-						// nbr d'element a inserer
+						if (first == last)
+							return;
+
+						difference_type elmt = position._ptr - this->_array;
+
 						size_type n = 0;
 						for (InputIterator it = first; it != last; it++)
 							n++;
-						if (n == 0)
-							return;
-						if (position == this->end())
-						{
-							while (first != last)
-							{
-								this->push_back(*first);
-								first++;
-							}
-							return;
-						}
-						size_type start = position._ptr - _array; 
-						size_type r_shift= _array + _size  - position._ptr; 
 						if (_size + n >= _capacity)
 							this->reserve(SPACE + n);
-						for (size_type i = 0; i < r_shift; i++)
-							_allocator.construct(_array + (_size - 1 + n - i), *(_array + (_size - 1 - i))); 
-						while (first != last)
+						for(pointer it = this->_array + this->_size + n - 1, ite = this->_array + elmt + n - 1; it != ite; it--) 
 						{
-							_array[start] = *first;
-							first++;
-							start++;
+							this->_allocator.construct(it, *(it - n));
+							this->_allocator.destroy(it - n);
 						}
-						_size +=n;
+						this->_size += n;
+						while (n > 0)
+						{
+							last--;
+							this->_allocator.construct(this->_array + elmt - 1 + n, *last);
+							n--;
+						}
+						return;
 					}
+				/*
+				// nbr d'element a inserer
+				size_type n = 0;
+				for (InputIterator it = first; it != last; it++)
+				n++;
+				if (n == 0)
+				return;
+				if (position == this->end())
+				{
+				while (first != last)
+				{
+				this->push_back(*first);
+				first++;
+				}
+				return;
+				}
+				size_type start = position._ptr - _array; 
+				size_type r_shift= _array + _size  - position._ptr; 
+				if (_size + n >= _capacity)
+				this->reserve(SPACE + n);
+				for (size_type i = 0; i < r_shift; i++)
+				_allocator.construct(_array + (_size - 1 + n - i), *(_array + (_size - 1 - i))); 
+				while (first != last)
+				{
+				_array[start] = *first;
+				first++;
+				start++;
+				}
+				_size +=n;
+				}
+				*/
 				iterator erase (iterator position)
 				{
 					if (this->empty() || position == this->end())
@@ -393,6 +442,7 @@ namespace ft
 					}
 					_size--;
 					return (position);
+
 				}
 
 				iterator erase (iterator first, iterator last)
@@ -446,55 +496,55 @@ namespace ft
 					return _allocator;
 				}
 
-			private:
+	private:
 
 				//end of class vector
-		};
+};
 	template <class T, class Alloc>
-		bool operator==(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
-		{
-			if (lhs.size() != rhs.size())
-				return (false);
-			return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
-		}
+bool operator==(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+{
+	if (lhs.size() != rhs.size())
+		return (false);
+	return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+}
 
 	template <class T, class Alloc>
-		bool operator!=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
-		{
-			return (!(lhs == rhs));
-		}
+bool operator!=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+{
+	return (!(lhs == rhs));
+}
 
 	template <class T, class Alloc>
-		bool operator<(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
-		{
-			return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
-		}
+bool operator<(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+{
+	return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+}
 
 	template <class T, class Alloc>
-		bool operator<=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
-		{
-			return (!(rhs < lhs));
-		}
+bool operator<=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+{
+	return (!(rhs < lhs));
+}
 
 	template <class T, class Alloc>
-		bool operator>(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
-		{
-			return (rhs < lhs);
-		}
+bool operator>(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+{
+	return (rhs < lhs);
+}
 
 
 	template <class T, class Alloc>
-		bool operator>=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
-		{
-			return (!(lhs < rhs));
-		}
+bool operator>=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+{
+	return (!(lhs < rhs));
+}
 
 	template <class T, class Alloc>
-		void swap(vector<T,Alloc>& x, vector<T,Alloc>& y)
-		{
-			x.swap(y);
-		}
-	//End of namespace
+void swap(vector<T,Alloc>& x, vector<T,Alloc>& y)
+{
+	x.swap(y);
+}
+//End of namespace
 };
 
 #endif
