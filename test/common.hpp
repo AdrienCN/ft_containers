@@ -6,7 +6,7 @@
 #include <vector>
 #include <list>
 
-//#define NAMESPACE ft 
+#define NAMESPACE ft 
 //#define NAMESPACE std 
 
 #include "../include/condition.hpp"

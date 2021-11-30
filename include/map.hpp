@@ -284,14 +284,10 @@ namespace ft
 					node *needle = _findVal(_root, val);
 					if (needle)
 					{
-					//	std::cout << "A) erasing : (" << needle->pr.first << ")(" << needle->pr.second << ")"  << std::endl;
 						_root = this->_myErase(_root, val);
 						this->_updatePosition();
 						if (_size > 0)
 							_size -= 1;
-					//	std::cout << "erased" << std::endl;
-					//	_printFromRoot(_root);
-					//	_printPos();
 						return (1);
 					}
 					else
@@ -300,7 +296,6 @@ namespace ft
 
 				void erase (iterator first, iterator second)
 				{
-				//	std::cout << "first : [" << first->first << "] -- second ["<< second->first << "]" << std::endl;
 						key_type k_second = second->first;
 						while (first != second)
 						{
@@ -313,47 +308,6 @@ namespace ft
 							second = this->find(k_second);
 						}
 						return ;
-				/*	
-					if (first == this->begin())
-					{
-						key_type k_second = second->first;
-						while (first != second)
-						{
-							iterator next = first;
-							next++;
-							key_type k_next = next->first;
-
-							this->erase(first);
-							first = this->find(k_next);
-							second = this->find(k_second);
-						}
-					}
-					else
-					{
-
-						key_type k = second->first;
-						while (first != second)
-						{
-
-						//	_printFromRoot(_root);
-						//	std::cout << "**1"  << std::endl;
-							iterator save = first;
-							std::cout << "1. save = " << save->first << std::endl;
-							save--;
-							//std::cout << "2 save-- = " << save->first << std::endl;
-						//	std::cout << "2"  << std::endl;
-							//std::cout << "B) erasing : (" << delete_him->first << ")(" << delete_him->second << ")"  << std::endl;
-							this->erase(first);
-							std::cout << "3" << std::endl;
-							save++;
-							std::cout << "4" << std::endl;
-							first = save;
-							second = find(k);
-						//	std::cout << "3 first = [" << first->first << "] - [" << first->second << "]"  << std::endl;
-						//	std::cout << "erased**\n" << std::endl;
-						}
-					}
-					*/
 				}
 
 				void swap(map & x)
@@ -870,7 +824,7 @@ namespace ft
 				}
 
 				//Fonction d'impression si besoin durant la correction
-
+/*
 			void	_printFromRoot(node *root)
 				{
 					if (root == NULL)
@@ -1024,6 +978,7 @@ namespace ft
 						std::cout << "(NULL)" << std::endl;
 					std::cout << std::endl;
 				}
+				*/
 					//Fin de class map
 		};
 	template< class Key, class T, class Compare, class Alloc >

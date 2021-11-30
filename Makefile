@@ -1,11 +1,10 @@
 #My_tester : for function testing
-#SRCS		= main_test.cpp \
+SRCS		= main_test.cpp \
 			  test_vector.cpp \
 			  test_stack.cpp \
 			  test_map.cpp  \
 			  common.cpp
 
-SRCS		= mon_main.cpp
 
 OBJS		= $(addprefix test/, $(SRCS:.cpp=.o))
 
